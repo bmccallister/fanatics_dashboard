@@ -1,0 +1,13 @@
+{
+  "name": "fewer",
+  "version":"0.0.0",
+  "scripts": {
+    "frontend": "cd frontend && webpack",
+    "server": "cd server && npm start",
+    "serve": "cd server && npm run fork && cd ../frontend && webpack --progress --colors --watch",
+    "restart": "/usr/bin/pkill node"
+  },
+  "dependencies": {
+    "path": "^0.12.7"
+  }
+}

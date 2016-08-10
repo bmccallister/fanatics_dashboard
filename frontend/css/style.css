@@ -1,0 +1,71 @@
+body {
+    background: #000;
+    color: #CCC;
+}
+
+#example3 span {
+    display: block;
+    width: 100%;
+    background: #CCC;
+    color: #000;
+    border: 1px solid #FFF;
+}
+
+.spanText {
+    padding: 5px;
+}
+.parentDiv {
+    margin-left: 15px;
+    font-size: 14pt;
+}
+
+.tableauComponent {
+    float: left;
+    display: inline-block;
+    margin: 15px;
+    width: 10%;
+    min-width: 220px;
+    height: auto;
+    min-height: 180px;
+    border-radius: 10px;
+    border-right: 4px solid #666;
+    border-bottom: 4px solid #666;
+    border-top: 2px solid #FFF;
+    border-left: 2px solid #FFF;
+    padding: 10px;
+}
+.tableauComponent .title {
+    font-size: 14pt;
+}
+.tableauComponent .description {
+    font-size: 10pt;
+}
+.tableauComponent .tableauRow {
+    width: 100%;
+    clear: both;
+    display: block;
+    margin: 5px 0;
+}
+.tableauComponent .tableauRow .indicator {
+    float: left;
+    display: inline;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    background-color: #CCC;
+    border: 1px solid #000;
+}
+.tableauComponent .tableauRow .indicator.green {
+    background-color: green;
+}
+.tableauComponent .tableauRow .indicator.yellow {
+    background-color: yellow;
+}
+.tableauComponent .tableauRow .indicator.red {
+    background-color: red;
+}
+.tableauComponent .tableauRow .rowText {
+    float: left;
+    margin-left: 20px;
+    width: auto;
+}
