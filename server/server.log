@@ -1,6 +1,6 @@
 my bucket: Bucket {
-  _name: 'beer-sample',
-  _username: 'beer-sample',
+  _name: 'default',
+  _username: undefined,
   _password: undefined,
   _cb: CouchbaseImpl {},
   connected: null,
@@ -25,56 +25,3 @@ my bucket: Bucket {
      keepAlive: false,
      maxSockets: 250,
      maxFreeSockets: 256 } }
-i have db: Bucket {
-  _name: 'beer-sample',
-  _username: 'beer-sample',
-  _password: undefined,
-  _cb: CouchbaseImpl {},
-  connected: null,
-  waitQueue: [],
-  _events: 
-   { connect: [ [Function], [Function] ],
-     error: [ [Function], [Function] ] },
-  _eventsCount: 2,
-  httpAgent: 
-   Agent {
-     domain: null,
-     _events: { free: [Function] },
-     _eventsCount: 1,
-     _maxListeners: undefined,
-     defaultPort: 80,
-     protocol: 'http:',
-     options: { path: null },
-     requests: {},
-     sockets: {},
-     freeSockets: {},
-     keepAliveMsecs: 1000,
-     keepAlive: false,
-     maxSockets: 250,
-     maxFreeSockets: 256 } }
-i have bucket { bucket: 
-   Bucket {
-     _name: 'beer-sample',
-     _username: 'beer-sample',
-     _password: undefined,
-     _cb: CouchbaseImpl {},
-     connected: null,
-     waitQueue: [],
-     _events: { connect: [Object], error: [Object] },
-     _eventsCount: 2,
-     httpAgent: 
-      Agent {
-        domain: null,
-        _events: [Object],
-        _eventsCount: 1,
-        _maxListeners: undefined,
-        defaultPort: 80,
-        protocol: 'http:',
-        options: [Object],
-        requests: {},
-        sockets: {},
-        freeSockets: {},
-        keepAliveMsecs: 1000,
-        keepAlive: false,
-        maxSockets: 250,
-        maxFreeSockets: 256 } } }

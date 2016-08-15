@@ -5,9 +5,6 @@ var N1qlQuery = require('couchbase').N1qlQuery;
  
 function TableauDataModel() { };
 
-console.log('i have db:', db);
-console.log('i have bucket', require('../app'));
-
 TableauDataModel.save = function(data, callback) {
     var jsonObject = {
         load: data.load,
@@ -25,6 +22,14 @@ TableauDataModel.save = function(data, callback) {
         callback(null, {message: "success", data: result});
     });
 }
+
+TableauDataModel.updatePayloadData = function(jsonString, callback) {
+    var keyVal = Obj.keys(jsonString)[0];
+    console.log('Key val in upload payload data:', keyVal);
+    callback('ok');
+    return;
+};
+
 
 TableauDataModel.getComponentData = function(component, callback) {
     var statement = "SELECT * " +

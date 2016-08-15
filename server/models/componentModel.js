@@ -5,9 +5,6 @@ var N1qlQuery = require('couchbase').N1qlQuery;
  
 function ComponentModel() { };
 
-console.log('i have db:', db);
-console.log('i have bucket', require('../app'));
-
 ComponentModel.save = function(data, callback) {
     var jsonObject = {
         bane: data.name,
