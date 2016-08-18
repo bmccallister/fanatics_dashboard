@@ -5,7 +5,7 @@ var checkTrailingSlash = function(str) {
     return str.substr(str.length, -1) == '/';
 }
 
-var getApi = function(route, param, optionalThis, optionalParam) {
+export const getApi = (route, param, optionalThis, optionalParam) => {
     return new Promise(function( resolve, reject) {
         param = param || '';
         var url = route;
@@ -36,6 +36,31 @@ var getApi = function(route, param, optionalThis, optionalParam) {
     });
 }
 
-module.exports = {
-    getApi: getApi
+export class DataFetchInterface {
+    constructor() {
+      this.componentList = this.componentList || [];
+    }
+    getComponentList () {
+      return this.componentList;
+    }
+    setComponentList (list) {
+      this.componentList = list;
+    }
+    fetchComponentList () {
+      var that = this;
+      return new Promise(function( resolve, reject) {
+        if (!that.componentList) {
+          that.componentList = [];
+        }
+        if (that.componentList.length>0) {
+          resolve(that.getComponentList());
+          return;
+        }
+        const url = '/api/tableau_components/';
+        getApi(url, '').then(function(data) {
+          that.setComponentList(data);
+          resolve(data);
+        }).catch(reject);
+      })
+    }
 }
