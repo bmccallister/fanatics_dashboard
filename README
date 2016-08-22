@@ -16,6 +16,26 @@ Fanatics - Project: TABLEAU
         
         Rabbit - This is a simple project which allows for messages sent through rabbit to propogate to the server and drive changes all the way to the front end
     
+        Couchbase - This is the NoSQL Database which we'll be housing our data in.  Please follow these steps to commission your system
+            1. Install couchbase (...)
+            2. Remove any/all sample buckets
+            3. Verify that you have at least 512M of space for your cluster by Clicking "Settings" from the couchbase administrative portal, and adjusting "Data RAM Quota" under "Custer Ram Quota" and ensure its at least 512M
+            4. Create your new data buckets
+                a) Click "Data Buckets"
+                b) Click "Create New Data Bucket"
+                c) Enter "tableau_components" for the Bucket name
+                d) Ensure "Per Node Ram Quota" is 256M
+                e) Under "Replicas" - de-select "Enable"
+                f) Click "Create" at the bottom of the page
+                g) Repeat steps b-f for "tableau_data"
+            5. Create your primary indexes (Note, the api WILL NOT WORK without primary indexes)
+                a) In Windows, go to http://localhost:8091/ui/index.html#/query/workbench
+                b) enter:
+                    CREATE PRIMARY INDEX ON `tableau_components` USING GSI;
+                c) click "Execute"
+                d) Repeat the process for "tableau_data"
+            6. Your couchbase system is commissioned!
+
     
 ---------------------------------------------------------
     

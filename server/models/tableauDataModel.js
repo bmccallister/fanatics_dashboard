@@ -1,6 +1,10 @@
 var uuid = require("uuid");
-var db = require("../app").bucket;
 var config = require("../config");
+var couchbase = require('couchbase');
+var db = (new couchbase.Cluster(config.couchbase.server));
+var tableauData = db.openBucket('tableau_data');
+var tableauComponents = db.openBucket('tableau_components');
+
 var N1qlQuery = require('couchbase').N1qlQuery;
  
 function TableauDataModel() { };
@@ -14,7 +18,7 @@ TableauDataModel.save = function(data, callback) {
         systemHealth: data.systemHealth
     }
     var documentId = data.document_id ? data.document_id : uuid.v4();
-    db.upsert(documentId, jsonObject, function(error, result) {
+    tableauData.upsert(documentId, jsonObject, function(error, result) {
         if(error) {
             callback(error, null);
             return;
@@ -32,11 +36,12 @@ TableauDataModel.updatePayloadData = function(jsonString, callback) {
 
 
 TableauDataModel.getComponentData = function(component, callback) {
+    console.log('Getting component data:', component);
     var statement = "SELECT * " +
                 "FROM `" + config.couchbase.data + "` where component=$1";
     var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
     console.log('Query:', query, component);
-    db.query(query, [component], function(error, result) {
+    tableauData.query(query, [component], function(error, result) {
         if(error) {
             return callback(error, null);
         }
@@ -48,7 +53,7 @@ TableauDataModel.getAll = function(callback) {
     var statement = "SELECT * " +
                     "FROM `" + config.couchbase.data + "`";
     var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
-    db.query(query, function(error, result) {
+    tableauData.query(query, function(error, result) {
         if(error) {
             return callback(error, null);
         }

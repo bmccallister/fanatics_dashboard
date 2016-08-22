@@ -43,7 +43,7 @@ var initialize = function(router) {
             })
     })
     
-    router.use('/tableau_components', function(req,res,next) {
+    router.use('/tableau_components', function(req,res,next) { 
         componentModel.getAll(function(error, results) {
             if (error) {
                 res.status(400).send(error);

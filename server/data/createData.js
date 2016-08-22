@@ -64,7 +64,7 @@ var upsert = function(obj, data, key) {
     });
 }
 
-processAll(tableauComponents, sampleData.tableauComponents, 'id', function() {
+processAll(tableauComponents, sampleData.tableauComponents, 'name', function() {
     console.log('Tableau Components created, resetting counter and beginning data');
     remainingComponents = 0;
     processAll(tableauData, sampleData.tableauData, 'id', function() {
