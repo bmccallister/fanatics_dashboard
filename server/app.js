@@ -23,7 +23,7 @@ var myLogger = function (req, res, next) {
 
 var passThrough = function(req,res,next) {
   var uri = url.parse(req.url).pathname
-    , filename = path.join(path.join(process.cwd(),'pages'), uri);
+    , filename = path.join(path.join(process.cwd(),'../frontend/pages'), uri);
     
   console.log('have path:', path)
   fs.exists(filename, function(exists) {

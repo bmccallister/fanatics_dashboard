@@ -1,50 +1,26 @@
-var createFragment = require('react-addons-create-fragment');
-var tbApi = require('./dataService');
-var componentData = [];
-var _ = require('lodash');
-var dataObject = {
-    getComponentList: function() {
-      this.componentList = this.componentList || [];
-      return this.componentList;
-    },
-    setComponentList: function(list) {
-      this.componentList = list;
-    },
-    fetchComponentList : function() {
-      var that = this;
-      return new Promise(function( resolve, reject) {
-        if (!that.componentList) {
-          that.componentList = [];
-        }
-        if (that.componentList.length>0) {
-          resolve(that.getComponentList());
-          return;
-        }
-        var url = '/api/tableau_components/';
-        tbApi.getApi(url, '').then(function(data) {
-          that.setComponentList(data);
-          resolve(data);
-        }).catch(reject);
-      })
-    }
-  }
+const createFragment = require('react-addons-create-fragment');
+const _ = require('lodash');
+import { DataFetchInterface, getApi } from './dataService';
+let dataObject = new DataFetchInterface();
+
+// Set up component list and initialize (Really unnecessary with constructor, remove)
 dataObject.setComponentList([]);
 
-var ComponentContainer = React.createClass({displayName: 'ComponentContainer',
-  getInitialState: function() {
-    return {componentList: [],currentTime: 0};
-  },
-  componentDidMount: function() {
+class ComponentContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {componentList: []};
+  }
+  componentDidMount() {
     var that= this;
-    
     that.setState({currentTime: new Date().getTime()});
     dataObject.fetchComponentList().then(function(data) {
       that.setState({componentList:data});
     }).catch(function(err) {
       console.log('error recieved:', err);
     });
-  },
-  render: function() {
+  }
+  render () {
     return (
     <div className="container">
       <div className="row">
@@ -60,28 +36,29 @@ var ComponentContainer = React.createClass({displayName: 'ComponentContainer',
       </div>
     </div>
     )
-  },
-  onUpdate: function(val) {
+  }
+  onUpdate (val) {
     this.setState({
       data:val
     })
   }
-})
+}
 
-var ComponentCount = React.createClass({displayName: 'ComponentCount',
-  render: function() {
-      var componentList = this.props.componentList || []
-      return (
-        <div className="row">
-          <div className="col-md-1">#:</div>
-          <div className="col-md-1">{componentList.length}</div>
-        </div>
-      );
-    }
-  });
+
+class ComponentCount extends React.Component {
+  render () {
+    const componentList = this.props.componentList || []
+    return (
+      <div className="row">
+        <div className="col-md-1">#:</div>
+        <div className="col-md-1">{componentList.length}</div>
+      </div>
+    );
+  }
+}
   
-var CurrentTime = React.createClass({displayName: 'CurrentTime',
-  render: function() {
+class CurrentTime extends React.Component {
+  render() {
     return (
         <div className="row">
           <div className="col-md-1">Date:</div>
@@ -89,48 +66,52 @@ var CurrentTime = React.createClass({displayName: 'CurrentTime',
         </div>
     );
   }
-});
+}
 
-var ComponentOptions = React.createClass({displayName: 'ComponentOptions',
-   render: function()
-    {
-        return (
-            <div>
-                <input type="text" ref="myInput" />
-                <input type="button" onClick={this.update} value="Update C2"/>
-            </div>
-        )
-    },
-    update: function()
-    {
-        var theVal = this.refs.myInput.getDOMNode().value;
-        this.props.onUpdate(theVal);
-    }
-});
+class ComponentOptions extends React.Component {
+  constructor(props) {
+    super(props);
+  this.update = this.update.bind(this);
+  }
+  render() {
+    return (
+      <div>
+        <input type="text" ref="myInput" />
+        <input type="button" onClick={this.update} value="Update C2"/>
+      </div>
+    )
+  }
+  update() {
+    // Unused for now, test code
+    var theVal = this.refs.myInput.getDOMNode().value;
+  }
+}
 
-var RepeaterRow = React.createClass({displayName: 'RepeaterRow',
-    render: function() {
-      var myObject = this.props.componentList[this.props.index].components;
-      var myFields = createFragment(myObject['values']);
-        return (
-          <div className="tableauComponent">
-            <div className="description">{myObject.description}</div>
-            <FieldRepeater valuesData={myFields} />
-          </div>
-        );
-    }
-});
-
-var cleanNum = function(numStr) {
-  var num = numStr + '';
-  var num = num.replace('%');
+class RepeaterRow extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    var myObject = this.props.componentList[this.props.index].components;
+    var myFields = createFragment(myObject['values']);
+    return (
+      <div className="tableauComponent">
+        <div className="description">{myObject.description}</div>
+        <FieldRepeater valuesData={myFields} />
+      </div>
+    );
+  }
+}
+const cleanNum = (numStr) => {
+  var num = (numStr + '').replace('%');
   return parseInt(num);
 }
-var establishIndicator = function(val, arrayArg) {
+
+const establishIndicator = (val, arrayArg) => {
   var thresholdArray = arrayArg;
   var indicator = '';
   
-  var determineAsc = function(val, thresholdArray) {
+  const determineAsc = (val, thresholdArray) => {
     var indicator = '';
     if (val>=cleanNum(thresholdArray[0])&& val<cleanNum(thresholdArray[1])) {
       indicator += ' green';
@@ -144,7 +125,7 @@ var establishIndicator = function(val, arrayArg) {
     return indicator;
   }
   
-  var determineDesc = function(val, thresholdArray) {
+  const determineDesc = (val, thresholdArray) => {
     var indicator = '';
     if (val<=cleanNum(thresholdArray[0])&& val>cleanNum(thresholdArray[1])) {
       indicator += ' green';
@@ -161,9 +142,8 @@ var establishIndicator = function(val, arrayArg) {
   if (thresholdArray.length < 1) {
     indicator+=' green';
   } else {
-    var TopVal = cleanNum(thresholdArray[0]);
-    var SecondVal = cleanNum(thresholdArray[1]);
-      console.log('Comparing ' + val + ' to be between ' + TopVal + ' to ' + SecondVal)
+    const TopVal = cleanNum(thresholdArray[0]);
+    const SecondVal = cleanNum(thresholdArray[1]);
     
     if (TopVal > SecondVal) {
       indicator = determineDesc(val, thresholdArray);
@@ -174,15 +154,15 @@ var establishIndicator = function(val, arrayArg) {
   return indicator;
 }
 
-var FieldRepeater = React.createClass({displayName: 'FieldRepeater',
-    render: function() {
-      var myObject = this.props.valuesData;
-      var rows = [];
+class FieldRepeater extends React.Component {
+    render() {
+      const myObject = this.props.valuesData;
+      let rows = [];
       for (var i = 0 ; i < myObject.length ; i++) {
         if (!myObject[i].value) {
           myObject[i].value = myObject[i].value || '?';
         }
-        var indicator = 'indicator';
+        let indicator = 'indicator';
         indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
         rows.push(
           <div className="tableauRow" key={i}>
@@ -198,32 +178,38 @@ var FieldRepeater = React.createClass({displayName: 'FieldRepeater',
         </div>
         );
     }
-});
+}
 
-var Repeater = React.createClass({
-    getInitialState: function() {
-      var self = this;
-      var updateComponentData = function() {
-        var i = 0;
-        var limit = self.props.componentList.length;
-        var url = '/api/tableau_components/';
-        
-        var processNext = function(cb) {
+class Repeater extends React.Component {
+    constructor (props) {
+      super(props);
+    }
+    componentDidMount () {
+      this.timer = setInterval(this.tick.bind(this), 3000);
+    }
+    tick() {
+      const self = this;
+      const updateComponentData = () => {
+        let i = 0;
+        const limit = self.props.componentList.length;
+        const url = '/api/tableau_components/';
+        console.log('Entering tick');
+        const processNext = function(cb) {
           if (i >= limit) {
             // Process final cb
             cb(true);
             return;
           }
-          var row = self.props.componentList[i].components;
+          const row = self.props.componentList[i].components;
           i++;
-          var name = row.name;
-          tbApi.getApi(url, name).then(function(data) {
+          const name = row.name;
+          getApi(url, name).then(function(data) {
             _.each(row.values, function(valueRow) {
               if (data.payload[valueRow.key]) {
               valueRow.value = data.payload[valueRow.key];
               }
             })
-            self.replaceState({componentData:data});
+            self.setState ({componentData:data});
             processNext(cb);
           }).catch(function(err) {
             console.log('Error:', err);
@@ -232,7 +218,7 @@ var Repeater = React.createClass({
         }
         
         
-        var finalCb = function(bVal) {
+        const finalCb = (bVal) => {
           //console.log('Final callback called');
         }
         
@@ -245,12 +231,9 @@ var Repeater = React.createClass({
         
       }
       console.log('starting updateComponentData interval')
-      setInterval(function() {
-        updateComponentData(this);
-      }, 3000);
-      return {componentList:this.props.componentList};
-    },
-    render: function() {
+      updateComponentData();
+    }
+    render() {
         var rows = [];
         var self = this;
         
@@ -259,68 +242,23 @@ var Repeater = React.createClass({
           var componentListTemp = createFragment(componentListTemp);
           rows.push(<RepeaterRow key={i} index={i} componentList={componentListTemp} />);
         }
-        return <div>{rows}</div>;
+        return (
+          <div>{rows}</div>
+          );
     }
-});
+}
 
 
 
-var getContainer = function() {
+const getContainer = () => {
     return document.getElementById('example3');
 }
 
 
 var container = getContainer();
 
+// Render sole component
 ReactDOM.render(
-    <ComponentContainer />,
-    document.getElementById('ComponentContainer')
-  );
-  
-  
-
-/*
-ReactDOM.render(
-    <SpanText url="/api/tableau_components" component={dataObject} />,
-    getContainer()
-)
-
-var SpanText = React.createClass({displayName: 'SpanText',
-  rawMarkup: function() {
-    var md = new Remarkable();
-    console.log('Creating raw markup');
-    var number = this.props.number || 'No number';
-    var rawMarkup = md.render(number.toString());
-    return { __html: rawMarkup };
-  },
-    getInitialState: function() {
-    return {data: []};
-  },
-  componentDidMount: function() {
-    console.log('in component did mount');
-    var url = this.props.url ;
-    console.log('url:' + url);
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        console.log('had success');
-        this.setState({data: data});
-        console.log('set state:', data);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log('Caught error:', err)
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-  render: function() {
-    return (
-        <div className="parentDiv">Span data:
-        <span dangerouslySetInnerHTML={this.rawMarkup()} />
-        </div>
-    );
-  }
-});
-*/
+  <ComponentContainer />,
+  document.getElementById('ComponentContainer')
+);
