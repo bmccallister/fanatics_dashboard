@@ -1,0 +1,106 @@
+Fanatics - Project: TABLEAU
+---------------------------------------------------------
+
+    Project Descriptions:
+        This project exists to allow for the creation of componentized graphical representations of health status of individual components such as TCS, the OMS, etc.
+    
+    Technology:
+        This project utilizes NodeJS version 4.0 as well as React for the front end, with RabbitMQ as the message queue and CouchBase as the NoSQL database system.
+    
+    This project is made up of the following components:
+        Frontend - This is the react (ES6) front end that displays the system agnostic components and updates their status via remote API calls at a set interval
+        
+        Server - This is the http server that is responsible for the passthrough webhosting on port 8888 as well as the the API server at endpoint /api which allows 
+            for data requests against the couchbase database.  Additionally the server project contains the ./data/createData subproject which will create and 
+            commission your couchbase documents
+        
+        Rabbit - This is a simple project which allows for messages sent through rabbit to propogate to the server and drive changes all the way to the front end
+    
+    
+---------------------------------------------------------
+    
+    Getting Started
+    
+    Frontend:
+        Installing:
+            cd /PROJECT/frontend
+            npm i    
+            
+        Starting:
+            Option 1: ( To start the server in a separate terminal)
+                cd /PROJECT/frontend
+                webpack --progress --colors --watch" 
+        
+            Option 2: (To use npm and run both the api and the front end watcher in the same terminal)
+                cd /PROJECT/
+                npm run serve
+                
+    Rabbit: (Assumes rabbitMQ is already installed on the local machine!)
+        Installing:
+            cd /PROJECT/rabbit
+            npm i
+        
+        Starting:
+            cd /PROJECT/rabbit
+            node recieve.js
+    
+        Testing: (With recieve running)
+            cd /PROJECT/rabbit
+            node send.js -- '{"id": "tcs_load1","payload": {"load": "55"}}'
+            
+    Server:
+        Configuration:
+            The following FILE:
+                /PROJECT/server/config.json
+            Is where configuration data for the couchbase interface is stored.  Bucket data as well as the URI for the connectivity should be stored here.
+            Out of the box, nothing should have to change, but this can be modified as needed.
+        
+        Installing:
+            cd /PROJECT/server
+            npm i
+        
+        Setting up: (Assumes couchbase is already installed!)
+            cd /PROJECT/server/data
+            node createData.js
+                ( Output from this command should terminate with:
+                    Process next returned remaining count:2
+                    All components processed!
+                    All rows created
+                )
+        
+        Starting:
+            cd /PROJECT/server
+            (IN WINDOWS)
+                npm start
+            (IN A REAL OS)
+                npm run fork // to start in background
+                npm start // to run, synchronously in that terminal
+                
+        Testing:
+            
+            API:
+                In a browser, go to 
+                    http://YOURSERVER:8888/api/tableau_components/
+                        This data should look like this:
+                            [{"components":{"acceptPush":false,"apiInterval":1000,"description":"TCS Load Monitoring","interval":"1000","name":"tcs_load","thresholdFields":["averageResponse"],"values":[{"key":"load","name":"Load","threshold":[]},{"key":"averageResponse","name":"Response Time","threshold":["0","3","5","1000"]},{"key":"peakConcurrent","name":"Max Conc.","threshold":[]},{"key":"lastHour","name":"Hits (1 hr)","threshold":[]},{"key":"systemHealth","name":"System Health","threshold":["100%","90%","80%","0%"]}]}},{"components":{"acceptPush":false,"description":"TCS Order Monitoring","interval":"1000","module":"tcs_orders","name":"tcs_orders","thresholdFields":["abandonedOrders","conversionRate"],"values":[{"key":"orders","name":"Total Orders","threshold":[]},{"key":"fulfilledOrders","name":"Fulfilled Orders","threshold":["0","3","5"]},{"key":"abandonedOrders","name":"Abandoned Orders","threshold":[]},{"key":"stuckOrders","name":"Stuck Orders","threshold":["0%","5%","100%"]},{"key":"conversionRate","name":"Conversion Rate ","threshold":["10%","7%","3%","0%"]}]}}]
+                            
+                    http://104.236.217.180:8888/api/tableau_components/tcs_load
+                        This data should look like this:
+                            {"component":"tcs_load","id":"tcs_load1","load":"64","payload":{"averageResponse":"1","lastHour":"5000","load":"999","peakConcurrent":"50000","systemHealth":"99%"},"timestamp":"1470661893"}
+                            
+            Front End:
+                http://104.236.217.180:8888/
+                    This should display the front end dashboard.  Several items should be green under "TCS Load Monitoring", and several should be yellow, red and green under "TCS Orders"
+            
+            End to End:
+                With the API and the Front End running, start the rabbit recieve process.
+                With the browser open in one window, and a terminal open in the /PROJECT/rabbit folder, experiment with sending data packets to the rabbitMQ publisher
+                    For example:
+                        node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "55"}}'
+                        
+                    With the above command, you should see the "Response Time" bauble turn red under TCS Load Monitoring, this indicates that the averageResponse time is outside of the tolerable threshold
+                    as defined in the ComponentData sample we created.
+                    
+                    Similarly:
+                        node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "3"}}'
+                    Should change the bauble to yellow, as an average response time of 3 seconds is tolerable, but not great.

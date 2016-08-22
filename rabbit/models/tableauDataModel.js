@@ -28,7 +28,7 @@ TableauDataModel.save = function(data, callback) {
 var buildSet = function(qObject) {
     var query = ' SET ';
     console.log('Building set from:', qObject);
-    console.log('Typeof:', typeof(qObject));
+
     console.log('Payload:', qObject.payload);
     var payloadArray = Object.keys(qObject.payload);
     for (var i = 0 ; i<payloadArray.length ; i++) {
@@ -54,6 +54,12 @@ var buildWhere = function(qObject) {
 }
 
 TableauDataModel.updatePayloadData = function(jsonObj, callback) {
+    if (typeof(jsonObj)=='string') {
+        console.log('parsing string:' + jsonObj);
+        var newObj = JSON.parse(jsonObj);
+        console.log('New Object successfully parsed');
+        jsonObj = newObj;
+    }
     var statement = "update " + config.couchbase.data;
     console.log('Statement 1:' + statement)
     statement += buildSet(jsonObj);
