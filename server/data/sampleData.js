@@ -1,7 +1,8 @@
 module.exports.tableauComponents = [
     {
   "name": "tcs_load",
-  "description": "TCS Load Monitoring",
+  "title": "TCS Load",
+  "description":"TCS Load Monitoring",
   "interval": "1000",
   "apiInterval": 1000,
   "acceptPush": false,
@@ -48,6 +49,7 @@ module.exports.tableauComponents = [
 },
 {
   "name": "tcs_orders",
+  "title":"TCS Orders",
   "description": "TCS Order Monitoring",
   "interval": "1000",
   "acceptPush": false,
