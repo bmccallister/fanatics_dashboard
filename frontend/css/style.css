@@ -1,14 +1,21 @@
-body {
-    background: #000;
-    color: #CCC;
+
+html { 
+  background: url('/images/fanbg.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
-#example3 span {
-    display: block;
-    width: 100%;
-    background: #CCC;
-    color: #000;
-    border: 1px solid #FFF;
+body
+{
+    background: transparent !important;
+}
+
+#logo-container img
+{
+    width: 250px !important;
+    height: 53px !important;
 }
 
 .spanText {
@@ -19,53 +26,30 @@ body {
     font-size: 14pt;
 }
 
-.tableauComponent {
-    float: left;
-    display: inline-block;
-    margin: 15px;
-    width: 10%;
-    min-width: 220px;
-    height: auto;
-    min-height: 180px;
-    border-radius: 10px;
-    border-right: 4px solid #666;
-    border-bottom: 4px solid #666;
-    border-top: 2px solid #FFF;
-    border-left: 2px solid #FFF;
-    padding: 10px;
+.indicator {
+    background-color: #404040;
 }
-.tableauComponent .title {
-    font-size: 14pt;
+
+.indicator.green {
+    background-color: #23AF3B;
 }
-.tableauComponent .description {
-    font-size: 10pt;
+
+.indicator.yellow {
+    background-color: #E5E02E;
 }
-.tableauComponent .tableauRow {
-    width: 100%;
-    clear: both;
-    display: block;
-    margin: 5px 0;
+
+.indicator.red {
+    background-color: #E53C2E;
 }
-.tableauComponent .tableauRow .indicator {
-    float: left;
-    display: inline;
-    width: 15px;
-    height: 15px;
-    border-radius: 10px;
-    background-color: #CCC;
-    border: 1px solid #000;
+
+.panel {
+    opacity: 0.95 !important;
 }
-.tableauComponent .tableauRow .indicator.green {
-    background-color: green;
+
+.container {
+    padding-top: 10px !important;
 }
-.tableauComponent .tableauRow .indicator.yellow {
-    background-color: yellow;
-}
-.tableauComponent .tableauRow .indicator.red {
-    background-color: red;
-}
-.tableauComponent .tableauRow .rowText {
-    float: left;
-    margin-left: 20px;
-    width: auto;
+
+.infoContainer{
+    padding-bottom: 10px;
 }
