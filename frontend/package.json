@@ -37,5 +37,9 @@
     "start": "webpack --progress --colors --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "bootswatch": "^3.3.7",
+    "image-webpack-loader": "^2.0.0"
+  }
 }
