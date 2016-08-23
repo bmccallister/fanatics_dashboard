@@ -96,6 +96,7 @@ class RepeaterRow extends React.Component {
     var myFields = createFragment(myObject['values']);
     return (
       <div className="tableauComponent">
+      <div className="description">{myObject.title}</div>
         <div className="description">{myObject.description}</div>
         <FieldRepeater valuesData={myFields} />
       </div>
@@ -103,13 +104,13 @@ class RepeaterRow extends React.Component {
   }
 }
 const cleanNum = (numStr) => {
-  var num = (numStr + '').replace('%');
+  const num = (numStr + '').replace('%');
   return parseInt(num);
 }
 
 const establishIndicator = (val, arrayArg) => {
-  var thresholdArray = arrayArg;
-  var indicator = '';
+  const thresholdArray = arrayArg;
+  let indicator = '';
   
   const determineAsc = (val, thresholdArray) => {
     var indicator = '';
@@ -126,7 +127,7 @@ const establishIndicator = (val, arrayArg) => {
   }
   
   const determineDesc = (val, thresholdArray) => {
-    var indicator = '';
+    let indicator = '';
     if (val<=cleanNum(thresholdArray[0])&& val>cleanNum(thresholdArray[1])) {
       indicator += ' green';
     }
@@ -234,8 +235,8 @@ class Repeater extends React.Component {
       updateComponentData();
     }
     render() {
-        var rows = [];
-        var self = this;
+        let rows = [];
+        const self = this;
         
         var componentListTemp = self.props.componentList;
         for (var i = 0 ; i < componentListTemp.length ; i++) {

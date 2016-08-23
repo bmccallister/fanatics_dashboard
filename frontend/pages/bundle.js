@@ -3154,6 +3154,11 @@
 	        React.createElement(
 	          'div',
 	          { className: 'description' },
+	          myObject.title
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'description' },
 	          myObject.description
 	        ),
 	        React.createElement(FieldRepeater, { valuesData: myFields })
