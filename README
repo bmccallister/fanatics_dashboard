@@ -66,7 +66,10 @@ Fanatics - Project: TABLEAU
     
         Testing: (With recieve running)
             cd /PROJECT/rabbit
-            node send.js -- '{"id": "tcs_load1","payload": {"load": "55"}}'
+            Mac/*Nix
+                node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "5"}}'
+            Windows
+                node send.js -- "{""id"": ""tcs_load1"",""payload"": {""averageResponse"": ""5""}}"
             
     Server:
         Configuration:
@@ -116,11 +119,18 @@ Fanatics - Project: TABLEAU
                 With the API and the Front End running, start the rabbit recieve process.
                 With the browser open in one window, and a terminal open in the /PROJECT/rabbit folder, experiment with sending data packets to the rabbitMQ publisher
                     For example:
-                        node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "55"}}'
+                        Mac/*NIX
+                            node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "55"}}'
+                        Windows
+                            node send.js -- "{""id"": ""tcs_load1"",""payload"": {""averageResponse"": ""55""}}"
                         
                     With the above command, you should see the "Response Time" bauble turn red under TCS Load Monitoring, this indicates that the averageResponse time is outside of the tolerable threshold
                     as defined in the ComponentData sample we created.
                     
                     Similarly:
-                        node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "3"}}'
+                        Mac/*Nix
+                            node send.js -- '{"id": "tcs_load1","payload": {"averageResponse": "3"}}'
+                        Windows
+                            node send.js -- "{""id"": ""tcs_load1"",""payload"": {""averageResponse"": ""5""}}"
+                            
                     Should change the bauble to yellow, as an average response time of 3 seconds is tolerable, but not great.
