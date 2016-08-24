@@ -18,7 +18,7 @@ class TableauDataModel {
             systemHealth: '100%'
         };
     }
-    getComponentData (component, callback) {
+    static getComponentData (component, callback) {
         let statement = "SELECT * " +
                     "FROM `" + config.couchbase.data + "` where component=$1";
         let query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
@@ -30,7 +30,7 @@ class TableauDataModel {
             callback(null, result);
         });
     }
-    getAll (callback) {
+    static getAll (callback) {
         var statement = "SELECT * " +
                         "FROM `" + config.couchbase.data + "`";
         var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);

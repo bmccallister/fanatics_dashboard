@@ -134,3 +134,23 @@ Fanatics - Project: TABLEAU
                             node send.js -- "{""id"": ""tcs_load1"",""payload"": {""averageResponse"": ""5""}}"
                             
                     Should change the bauble to yellow, as an average response time of 3 seconds is tolerable, but not great.
+
+
+Troubleshooting:
+    RabbitMQ on mac had some problems.      If you are unable to connect to rabbit with the receive.js in the rabbit project, determine if your guest user has been set up correctly.
+
+    Run /RABBITINSTALL/sbin/rabbitmqctl list_users
+
+    If no users have been created, then your installation did not create a user automatically.  This likely failed because it appears the erlang installation thats built into the "distributable" copy doesn't come with Crypto, thus the default guest/guest account is not created when the rabbitmqctl starts.
+
+    This can be resolved by rolling back the default encryption method.
+
+    Edit the /RABBITINSTALL/etc/rabbitmq/rabbitmq.config (Copy this file, if you still have rabbitmq.config.default)
+    Locate the line {password_hashing_module, rabbit_password_hashing_sha512} (or whichever sha version is set) and change it to 
+    {password_hashing_module, rabbit_password_hashing_md5}.
+    If it is commented out with %%, uncomment this line.
+
+    You will now need to create your user:
+        ./rabbitmqctl add_user guest guest
+    Give your user permissions to the '/' vhost
+        ./rabbitmqctl set_permissions -p / guest ".*" ".*" ".*"

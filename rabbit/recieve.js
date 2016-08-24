@@ -2,6 +2,11 @@ var amqp = require('amqplib/callback_api');
 var DataModel = require("./models/tableauDataModel");
 
 amqp.connect('amqp://localhost', function(err, conn) {
+  console.log('I had error:', err);
+  if(!conn) {
+	console.log('No connection');
+	process.exit(0);
+  }
   conn.createChannel(function(err, ch) {
     var q = 'fanatics_dashboard';
 

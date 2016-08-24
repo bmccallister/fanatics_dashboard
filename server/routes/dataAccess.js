@@ -7,10 +7,11 @@ const DataModel = require("../models/tableauDataModel");
 
 
 const initialize = (router) => {
+    console.log('inside the router')
     router.use('/test', function(req,res,next) {
       res.send('test ok');
     })
-    
+    console.log('setting up routes');
     router.use('/tableau_components/:component', (req,res,next) => {
             var component = req.params.component;
             console.log('i have datamodel:', DataModel);
