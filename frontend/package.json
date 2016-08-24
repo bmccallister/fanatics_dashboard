@@ -33,8 +33,13 @@
     "webpack-traceur-loader": "^0.3.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --progress --colors --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "bootswatch": "^3.3.7",
+    "image-webpack-loader": "^2.0.0"
+  }
 }

@@ -1,8 +1,10 @@
 var uuid = require("uuid");
-var config = require("../../server/config");
 var _ = require('lodash');
-var couchbase = require("couchbase");
-var db = (new couchbase.Cluster(config.couchbase.server)).openBucket(config.couchbase.bucket);
+var config = require("../../server/config");
+var couchbase = require('couchbase');
+var db = (new couchbase.Cluster(config.couchbase.server));
+var tableauData = db.openBucket('tableau_data');
+var tableauComponents = db.openBucket('tableau_components');
 var N1qlQuery = couchbase.N1qlQuery;
  
 function TableauDataModel() { };
@@ -28,7 +30,7 @@ TableauDataModel.save = function(data, callback) {
 var buildSet = function(qObject) {
     var query = ' SET ';
     console.log('Building set from:', qObject);
-    console.log('Typeof:', typeof(qObject));
+
     console.log('Payload:', qObject.payload);
     var payloadArray = Object.keys(qObject.payload);
     for (var i = 0 ; i<payloadArray.length ; i++) {
@@ -54,20 +56,28 @@ var buildWhere = function(qObject) {
 }
 
 TableauDataModel.updatePayloadData = function(jsonObj, callback) {
-    var statement = "update " + config.couchbase.data;
-    console.log('Statement 1:' + statement)
-    statement += buildSet(jsonObj);
-    console.log('Statement 2:' + statement)
-    statement += buildWhere(jsonObj);
-    console.log('Statement 3:' + statement)
-    var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
-    db.query(query, function(error, result) {
-        if(error) {
-            return callback(error, null);
+    try {
+        if (typeof(jsonObj)=='string') {
+            console.log('parsing string:' + jsonObj);
+            var newObj = JSON.parse(jsonObj);
+            jsonObj = newObj;
         }
-        callback(null, result);
-    });
-    return;
+        var statement = "update " + config.couchbase.data;
+        statement += buildSet(jsonObj);
+        statement += buildWhere(jsonObj);
+        console.log('n1ql statement:' + statement)
+        var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
+        tableauData.query(query, function(error, result) {
+            if(error) {
+                return callback(error, null);
+            }
+            callback(null, result);
+        });
+        return;
+    } catch (exc) {
+        console.log('Error converting value to json:', jsonObj);
+        callback(null, undefined);
+    }
 };
 
 

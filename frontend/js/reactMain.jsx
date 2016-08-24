@@ -24,11 +24,11 @@ class ComponentContainer extends React.Component {
     return (
     <div className="container">
       <div className="row">
-        <div className="col-md-3">
-          <ComponentCount componentList={this.state.componentList} />
-        </div>
-        <div className="col-md-3">
-          <CurrentTime currentTime={this.state.currentTime} />
+        <div className="hidden-xs hidden-sm col-md-12 text-right">
+          <p className="infoContainer">
+            <ComponentCount componentList={this.state.componentList} />
+            <CurrentTime currentTime={this.state.currentTime} />
+          </p>
         </div>
       </div>
       <div className="row">
@@ -49,9 +49,8 @@ class ComponentCount extends React.Component {
   render () {
     const componentList = this.props.componentList || []
     return (
-      <div className="row">
-        <div className="col-md-1">#:</div>
-        <div className="col-md-1">{componentList.length}</div>
+      <div>
+        Now monitoring {componentList.length} systems
       </div>
     );
   }
@@ -60,9 +59,8 @@ class ComponentCount extends React.Component {
 class CurrentTime extends React.Component {
   render() {
     return (
-        <div className="row">
-          <div className="col-md-1">Date:</div>
-          <div className="col-md-1">{this.props.currentTime}</div>
+        <div>
+          Current Date/Time: {this.props.currentTime}
         </div>
     );
   }
@@ -95,21 +93,26 @@ class RepeaterRow extends React.Component {
     var myObject = this.props.componentList[this.props.index].components;
     var myFields = createFragment(myObject['values']);
     return (
-      <div className="tableauComponent">
-        <div className="description">{myObject.description}</div>
-        <FieldRepeater valuesData={myFields} />
+      <div className="col-md-4">
+      <div className="panel panel-default">
+        <div className="description">{myObject.title}</div>
+        <div className="panel-heading">{myObject.description}</div>
+        <table className="table table-striped table-bordered">
+          <FieldRepeater valuesData={myFields} />
+        </table>
+      </div>
       </div>
     );
   }
 }
 const cleanNum = (numStr) => {
-  var num = (numStr + '').replace('%');
+  const num = (numStr + '').replace('%');
   return parseInt(num);
 }
 
 const establishIndicator = (val, arrayArg) => {
-  var thresholdArray = arrayArg;
-  var indicator = '';
+  const thresholdArray = arrayArg;
+  let indicator = '';
   
   const determineAsc = (val, thresholdArray) => {
     var indicator = '';
@@ -126,7 +129,7 @@ const establishIndicator = (val, arrayArg) => {
   }
   
   const determineDesc = (val, thresholdArray) => {
-    var indicator = '';
+    let indicator = '';
     if (val<=cleanNum(thresholdArray[0])&& val>cleanNum(thresholdArray[1])) {
       indicator += ' green';
     }
@@ -165,18 +168,14 @@ class FieldRepeater extends React.Component {
         let indicator = 'indicator';
         indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
         rows.push(
-          <div className="tableauRow" key={i}>
-            <div className={indicator}></div>
-            <div className="rowText">{myObject[i].name}</div>
-            <div className="rowText">{myObject[i].value}</div>
-          </div>
+          <tr key={i}>
+            <td className={indicator}></td>
+            <td>{myObject[i].name}</td>
+            <td>{myObject[i].value}</td>
+          </tr>
         );
       }
-      return (
-        <div>
-        {rows}
-        </div>
-        );
+      return (<tbody>{rows}</tbody>);
     }
 }
 
@@ -234,8 +233,8 @@ class Repeater extends React.Component {
       updateComponentData();
     }
     render() {
-        var rows = [];
-        var self = this;
+        let rows = [];
+        const self = this;
         
         var componentListTemp = self.props.componentList;
         for (var i = 0 ; i < componentListTemp.length ; i++) {
