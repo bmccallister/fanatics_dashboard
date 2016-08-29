@@ -4903,7 +4903,10 @@
 	    param = param || '';
 	    var url = route;
 	
-	    console.log('Attempting to connect socket');
+	    //socket.emit('test', 'this is a test');
+	    socket.on('test', function (msg) {
+	      console.log('client received this message: ' + msg);
+	    });
 	
 	    if (param.length > 1) {
 	      if (!checkTrailingSlash(route)) {

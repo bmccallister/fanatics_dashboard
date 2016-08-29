@@ -3,21 +3,13 @@
 const _ = require('lodash');
 const componentService = require("../services/componentService");
 
-class ComponentService {
+class ComponentLogic {
 
-    static getAllComponents(req, res)
+    static getAllComponents(callback)
     {
-        componentService.getAll(function(error, results) 
-        {
-            if (error) 
-            {
-                res.status(400).send(error);
-                return;
-            }
-            res.json(results);
-        });
+        componentService.getAll(callback);
     }
 
 }
 
-module.exports = ComponentService;
+module.exports = ComponentLogic;
