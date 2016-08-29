@@ -1,14 +1,22 @@
+
+var socket = io.connect('http://localhost:8888');
+
 var checkTrailingSlash = function(str) {
-    console.log('Checking trailing slash on ' + str);
-    console.log('typeof:' +typeof(str));
-    console.log('Checking str reverse:', str.substr(str.length, -1) );
     return str.substr(str.length, -1) == '/';
 }
 
 export const getApi = (route, param, optionalThis, optionalParam) => {
+    
     return new Promise(function( resolve, reject) {
         param = param || '';
         var url = route;
+
+       
+        //socket.emit('test', 'this is a test');
+        socket.on('test', function(msg){
+          console.log('client received this message: ' + msg);
+        });
+              
         if (param.length>1) {
             if (!checkTrailingSlash(route)) {
                 route+='/';
@@ -38,6 +46,7 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
 
 export class DataFetchInterface {
     constructor() {
+      
       this.componentList = this.componentList || [];
     }
     getComponentList () {
@@ -58,6 +67,7 @@ export class DataFetchInterface {
         }
         const url = '/api/tableau_components/';
         getApi(url, '').then(function(data) {
+          
           that.setComponentList(data);
           resolve(data);
         }).catch(reject);

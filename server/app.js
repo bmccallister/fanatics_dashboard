@@ -1,22 +1,33 @@
+"use strict";
+
 // Includes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 const express = require('express');
-const http = require("http"),
-    url = require("url"),
-    path = require("path"),
-    fs = require("fs"),
-    port = process.argv[2] || 8888,
-    app = express();
+const url = require("url");
+const path = require("path");
+const fs = require("fs");
+const port = process.argv[2] || 8888;
+const app = express();
 
+const http = require("http").createServer(app);
+
+const io = require('socket.io')(http);
 const bodyParser = require("body-parser");
 const router = express.Router();
+
+const routeManager = require('./managers/routeManager');
+routeManager.initialize(router);
+
+const socketManager = require('./managers/socketManager');
+socketManager.initialize(io);
 
 // Middleware
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 const myLogger = (req, res, next) => {
-  console.log('Request:', req);
+  //console.log('Request:', req);
   next();
 };
+
 
 const passThrough = (req,res,next) => {
   const uri = url.parse(req.url).pathname;
@@ -54,11 +65,8 @@ const passThrough = (req,res,next) => {
 console.log('initializing');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const dataAccess = require('./routes/dataAccess');
-dataAccess.initialize(router);
-
 app.use(myLogger);
 app.use('/api', router);
 app.use(passThrough);
-app.listen(port);
+http.listen(port);
 console.log('Listening on port:', port);
