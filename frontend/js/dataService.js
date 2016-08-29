@@ -1,5 +1,5 @@
 
-var socket = io.connect('http://localhost:8888');
+
 
 var checkTrailingSlash = function(str) {
     console.log('Checking trailing slash on ' + str);
@@ -9,10 +9,11 @@ var checkTrailingSlash = function(str) {
 }
 
 export const getApi = (route, param, optionalThis, optionalParam) => {
-  
+    
     return new Promise(function( resolve, reject) {
         param = param || '';
         var url = route;
+        var socket = io.connect('http://localhost:8888');
               
         if (param.length>1) {
             if (!checkTrailingSlash(route)) {

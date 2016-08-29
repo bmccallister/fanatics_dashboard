@@ -13,10 +13,10 @@ const http = require("http"),
 const bodyParser = require("body-parser");
 const router = express.Router();
 
-const routeManager = require('./dataAccess/routeManager');
+const routeManager = require('./managers/routeManager');
 routeManager.initialize(router);
 
-const socketManager = require('./dataAccess/socketManager');
+const socketManager = require('./managers/socketManager');
 socketManager.initialize(http);
 
 // Middleware

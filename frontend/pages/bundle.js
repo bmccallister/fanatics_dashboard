@@ -4888,8 +4888,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var socket = io.connect('http://localhost:8888');
-	
 	var checkTrailingSlash = function checkTrailingSlash(str) {
 	  console.log('Checking trailing slash on ' + str);
 	  console.log('typeof:' + (typeof str === 'undefined' ? 'undefined' : (0, _typeof3.default)(str)));
@@ -4902,6 +4900,7 @@
 	  return new _promise2.default(function (resolve, reject) {
 	    param = param || '';
 	    var url = route;
+	    var socket = io.connect('http://localhost:8888');
 	
 	    if (param.length > 1) {
 	      if (!checkTrailingSlash(route)) {
