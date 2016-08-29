@@ -1,5 +1,7 @@
+
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
+
 import { DataFetchInterface, getApi } from './dataService';
 let dataObject = new DataFetchInterface();
 
@@ -19,6 +21,7 @@ class ComponentContainer extends React.Component {
     }).catch(function(err) {
       console.log('error recieved:', err);
     });
+
   }
   render () {
     return (
@@ -255,6 +258,7 @@ const getContainer = () => {
 
 
 var container = getContainer();
+
 
 // Render sole component
 ReactDOM.render(

@@ -1,3 +1,5 @@
+"use strict";
+
 // Includes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 const express = require('express');
@@ -11,12 +13,19 @@ const http = require("http"),
 const bodyParser = require("body-parser");
 const router = express.Router();
 
+const routeManager = require('./dataAccess/routeManager');
+routeManager.initialize(router);
+
+const socketManager = require('./dataAccess/socketManager');
+socketManager.initialize(http);
+
 // Middleware
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 const myLogger = (req, res, next) => {
-  console.log('Request:', req);
+  //console.log('Request:', req);
   next();
 };
+
 
 const passThrough = (req,res,next) => {
   const uri = url.parse(req.url).pathname;
@@ -54,9 +63,6 @@ const passThrough = (req,res,next) => {
 console.log('initializing');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const dataAccess = require('./routes/dataAccess');
-dataAccess.initialize(router);
-
 app.use(myLogger);
 app.use('/api', router);
 app.use(passThrough);

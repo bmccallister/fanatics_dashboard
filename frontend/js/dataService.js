@@ -1,3 +1,6 @@
+
+var socket = io.connect('http://localhost:8888');
+
 var checkTrailingSlash = function(str) {
     console.log('Checking trailing slash on ' + str);
     console.log('typeof:' +typeof(str));
@@ -6,9 +9,11 @@ var checkTrailingSlash = function(str) {
 }
 
 export const getApi = (route, param, optionalThis, optionalParam) => {
+  
     return new Promise(function( resolve, reject) {
         param = param || '';
         var url = route;
+              
         if (param.length>1) {
             if (!checkTrailingSlash(route)) {
                 route+='/';
@@ -38,6 +43,7 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
 
 export class DataFetchInterface {
     constructor() {
+      
       this.componentList = this.componentList || [];
     }
     getComponentList () {
@@ -58,6 +64,7 @@ export class DataFetchInterface {
         }
         const url = '/api/tableau_components/';
         getApi(url, '').then(function(data) {
+          
           that.setComponentList(data);
           resolve(data);
         }).catch(reject);

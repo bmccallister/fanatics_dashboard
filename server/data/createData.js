@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require("../../server/config");
 var _ = require('lodash');
 var couchbase = require("couchbase");
