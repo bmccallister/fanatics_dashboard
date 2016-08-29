@@ -1,7 +1,7 @@
 
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-
+import NavMenu from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 let dataObject = new DataFetchInterface();
 
@@ -26,12 +26,13 @@ class ComponentContainer extends React.Component {
   render () {
     return (
     <div className="container">
+    <NavMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
-          <p className="infoContainer">
+          <div className="infoContainer">
             <ComponentCount componentList={this.state.componentList} />
             <CurrentTime currentTime={this.state.currentTime} />
-          </p>
+          </div>
         </div>
       </div>
       <div className="row">
@@ -94,14 +95,14 @@ class RepeaterRow extends React.Component {
   }
   render() {
     var myObject = this.props.componentList[this.props.index].components;
-    var myFields = createFragment(myObject['values']);
+    //var myFields = createFragment(myObject['values']);
     return (
       <div className="col-md-4">
       <div className="panel panel-default">
         <div className="description">{myObject.title}</div>
         <div className="panel-heading">{myObject.description}</div>
         <table className="table table-striped table-bordered">
-          <FieldRepeater valuesData={myFields} />
+          <FieldRepeater valuesData={myObject.values} />
         </table>
       </div>
       </div>
@@ -195,7 +196,6 @@ class Repeater extends React.Component {
         let i = 0;
         const limit = self.props.componentList.length;
         const url = '/api/tableau_components/';
-        console.log('Entering tick');
         const processNext = function(cb) {
           if (i >= limit) {
             // Process final cb
@@ -232,7 +232,6 @@ class Repeater extends React.Component {
         }
         
       }
-      console.log('starting updateComponentData interval')
       updateComponentData();
     }
     render() {
@@ -241,7 +240,7 @@ class Repeater extends React.Component {
         
         var componentListTemp = self.props.componentList;
         for (var i = 0 ; i < componentListTemp.length ; i++) {
-          var componentListTemp = createFragment(componentListTemp);
+          //var componentListTemp = createFragment(componentListTemp);
           rows.push(<RepeaterRow key={i} index={i} componentList={componentListTemp} />);
         }
         return (
@@ -250,18 +249,4 @@ class Repeater extends React.Component {
     }
 }
 
-
-
-const getContainer = () => {
-    return document.getElementById('example3');
-}
-
-
-var container = getContainer();
-
-
-// Render sole component
-ReactDOM.render(
-  <ComponentContainer />,
-  document.getElementById('ComponentContainer')
-);
+export default ComponentContainer;

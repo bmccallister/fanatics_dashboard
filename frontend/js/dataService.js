@@ -2,9 +2,6 @@
 var socket = io.connect('http://localhost:8888');
 
 var checkTrailingSlash = function(str) {
-    console.log('Checking trailing slash on ' + str);
-    console.log('typeof:' +typeof(str));
-    console.log('Checking str reverse:', str.substr(str.length, -1) );
     return str.substr(str.length, -1) == '/';
 }
 
