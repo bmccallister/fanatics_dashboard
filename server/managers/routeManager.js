@@ -13,6 +13,9 @@ const initialize = (router) => {
     router.use('/tableau_components', (req,res,next) => { 
         componentLogic.getAllComponents(req, res);
     });
+    router.use('/socket.io/', (req,res,next) => {
+        console.log('reached socket route.');
+    });
 }
 
 module.exports = {
