@@ -188,7 +188,11 @@ class Repeater extends React.Component {
       super(props);
     }
     componentDidMount () {
+      this.enabledTimer = true;
       this.timer = setInterval(this.tick.bind(this), 3000);
+    }
+    componentWillUnmount () {
+      this.enabledTimer = false;
     }
     tick() {
       const self = this;
@@ -232,7 +236,10 @@ class Repeater extends React.Component {
         }
         
       }
-      updateComponentData();
+      if (self.enabledTimer) {
+        updateComponentData();
+    
+      }
     }
     render() {
         let rows = [];

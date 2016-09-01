@@ -58,11 +58,15 @@
 	
 	var _reactMain2 = _interopRequireDefault(_reactMain);
 	
-	var _reactComponentCreation = __webpack_require__(343);
+	var _reactComponentCreation = __webpack_require__(344);
 	
 	var _reactComponentCreation2 = _interopRequireDefault(_reactComponentCreation);
 	
-	var _navMenu = __webpack_require__(344);
+	var _chartistComponent = __webpack_require__(371);
+	
+	var _chartistComponent2 = _interopRequireDefault(_chartistComponent);
+	
+	var _navMenu = __webpack_require__(322);
 	
 	var _navMenu2 = _interopRequireDefault(_navMenu);
 	
@@ -77,6 +81,7 @@
 	var NoMatch = _react2.default.createClass({
 		displayName: 'NoMatch',
 		render: function render() {
+			console.log('Rendering no match');
 			return _react2.default.createElement(
 				'div',
 				null,
@@ -91,12 +96,10 @@
 		_react2.default.createElement(
 			_reactRouter.Router,
 			{ history: _reactRouter.browserHistory },
-			_react2.default.createElement(
-				_reactRouter.Route,
-				{ path: '/', component: _reactMain2.default },
-				_react2.default.createElement(_reactRouter.Route, { path: '/create', component: _reactComponentCreation2.default }),
-				_react2.default.createElement(_reactRouter.Route, { path: '*', component: NoMatch })
-			)
+			_react2.default.createElement(_reactRouter.Route, { path: '/', component: _reactMain2.default }),
+			_react2.default.createElement(_reactRouter.Route, { path: '/create', component: _reactComponentCreation2.default }),
+			_react2.default.createElement(_reactRouter.Route, { path: '/chartistComponent', component: _chartistComponent2.default }),
+			_react2.default.createElement(_reactRouter.Route, { path: '*', component: NoMatch })
 		)
 	), document.getElementById('ComponentContainer'));
 
@@ -27132,16 +27135,16 @@
 	
 	var _inherits3 = _interopRequireDefault(_inherits2);
 	
-	var _navMenu = __webpack_require__(344);
+	var _navMenu = __webpack_require__(322);
 	
 	var _navMenu2 = _interopRequireDefault(_navMenu);
 	
-	var _dataService = __webpack_require__(322);
+	var _dataService = __webpack_require__(323);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var createFragment = __webpack_require__(339);
-	var _ = __webpack_require__(341);
+	var createFragment = __webpack_require__(340);
+	var _ = __webpack_require__(342);
 	
 	var dataObject = new _dataService.DataFetchInterface();
 	
@@ -27437,7 +27440,13 @@
 	  (0, _createClass3.default)(Repeater, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      this.enabledTimer = true;
 	      this.timer = setInterval(this.tick.bind(this), 3000);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.enabledTimer = false;
 	    }
 	  }, {
 	    key: 'tick',
@@ -27481,7 +27490,9 @@
 	          processNext(finalCb);
 	        }
 	      };
-	      updateComponentData();
+	      if (self.enabledTimer) {
+	        updateComponentData();
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -29045,6 +29056,106 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _getPrototypeOf = __webpack_require__(236);
+	
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+	
+	var _classCallCheck2 = __webpack_require__(262);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _createClass2 = __webpack_require__(263);
+	
+	var _createClass3 = _interopRequireDefault(_createClass2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(267);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(314);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
+	
+	var _dataService = __webpack_require__(323);
+	
+	var _reactRouter = __webpack_require__(172);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var createFragment = __webpack_require__(340);
+	var _ = __webpack_require__(342);
+	
+	var NavMenu = function (_React$Component) {
+	  (0, _inherits3.default)(NavMenu, _React$Component);
+	
+	  function NavMenu(props) {
+	    (0, _classCallCheck3.default)(this, NavMenu);
+	
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (NavMenu.__proto__ || (0, _getPrototypeOf2.default)(NavMenu)).call(this, props));
+	
+	    _this.state = { componentList: [] };
+	    return _this;
+	  }
+	
+	  (0, _createClass3.default)(NavMenu, [{
+	    key: 'render',
+	    value: function render() {
+	      console.log('In render');
+	      return React.createElement(
+	        'div',
+	        null,
+	        'Nav menu!',
+	        React.createElement(
+	          'ul',
+	          null,
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              _reactRouter.Link,
+	              { to: '/' },
+	              'Main'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              _reactRouter.Link,
+	              { to: '/create' },
+	              'Create Component'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              _reactRouter.Link,
+	              { to: '/chartistComponent' },
+	              'Chartist'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return NavMenu;
+	}(React.Component);
+	
+	;
+	console.log('Exporting navmenu');
+	exports.default = NavMenu;
+
+/***/ },
+/* 323 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.DataFetchInterface = exports.getApi = undefined;
 	
 	var _classCallCheck2 = __webpack_require__(262);
@@ -29055,7 +29166,7 @@
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _promise = __webpack_require__(323);
+	var _promise = __webpack_require__(324);
 	
 	var _promise2 = _interopRequireDefault(_promise);
 	
@@ -29148,38 +29259,38 @@
 	}();
 
 /***/ },
-/* 323 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(324), __esModule: true };
+	module.exports = { "default": __webpack_require__(325), __esModule: true };
 
 /***/ },
-/* 324 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(311);
 	__webpack_require__(271);
 	__webpack_require__(293);
-	__webpack_require__(325);
+	__webpack_require__(326);
 	module.exports = __webpack_require__(249).Promise;
 
 /***/ },
-/* 325 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var LIBRARY            = __webpack_require__(275)
 	  , global             = __webpack_require__(245)
 	  , ctx                = __webpack_require__(250)
-	  , classof            = __webpack_require__(326)
+	  , classof            = __webpack_require__(327)
 	  , $export            = __webpack_require__(248)
 	  , isObject           = __webpack_require__(255)
 	  , aFunction          = __webpack_require__(251)
-	  , anInstance         = __webpack_require__(327)
-	  , forOf              = __webpack_require__(328)
-	  , speciesConstructor = __webpack_require__(332)
-	  , task               = __webpack_require__(333).set
-	  , microtask          = __webpack_require__(335)()
+	  , anInstance         = __webpack_require__(328)
+	  , forOf              = __webpack_require__(329)
+	  , speciesConstructor = __webpack_require__(333)
+	  , task               = __webpack_require__(334).set
+	  , microtask          = __webpack_require__(336)()
 	  , PROMISE            = 'Promise'
 	  , TypeError          = global.TypeError
 	  , process            = global.process
@@ -29371,7 +29482,7 @@
 	    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
 	    this._n = false;          // <- notify
 	  };
-	  Internal.prototype = __webpack_require__(336)($Promise.prototype, {
+	  Internal.prototype = __webpack_require__(337)($Promise.prototype, {
 	    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
 	    then: function then(onFulfilled, onRejected){
 	      var reaction    = newPromiseCapability(speciesConstructor(this, $Promise));
@@ -29398,7 +29509,7 @@
 	
 	$export($export.G + $export.W + $export.F * !USE_NATIVE, {Promise: $Promise});
 	__webpack_require__(291)($Promise, PROMISE);
-	__webpack_require__(337)(PROMISE);
+	__webpack_require__(338)(PROMISE);
 	Wrapper = __webpack_require__(249)[PROMISE];
 	
 	// statics
@@ -29422,7 +29533,7 @@
 	    return capability.promise;
 	  }
 	});
-	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(338)(function(iter){
+	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(339)(function(iter){
 	  $Promise.all(iter)['catch'](empty);
 	})), PROMISE, {
 	  // 25.4.4.1 Promise.all(iterable)
@@ -29468,7 +29579,7 @@
 	});
 
 /***/ },
-/* 326 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
@@ -29496,7 +29607,7 @@
 	};
 
 /***/ },
-/* 327 */
+/* 328 */
 /***/ function(module, exports) {
 
 	module.exports = function(it, Constructor, name, forbiddenField){
@@ -29506,15 +29617,15 @@
 	};
 
 /***/ },
-/* 328 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx         = __webpack_require__(250)
-	  , call        = __webpack_require__(329)
-	  , isArrayIter = __webpack_require__(330)
+	  , call        = __webpack_require__(330)
+	  , isArrayIter = __webpack_require__(331)
 	  , anObject    = __webpack_require__(254)
 	  , toLength    = __webpack_require__(287)
-	  , getIterFn   = __webpack_require__(331)
+	  , getIterFn   = __webpack_require__(332)
 	  , BREAK       = {}
 	  , RETURN      = {};
 	var exports = module.exports = function(iterable, entries, fn, that, ITERATOR){
@@ -29536,7 +29647,7 @@
 	exports.RETURN = RETURN;
 
 /***/ },
-/* 329 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
@@ -29553,7 +29664,7 @@
 	};
 
 /***/ },
-/* 330 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
@@ -29566,10 +29677,10 @@
 	};
 
 /***/ },
-/* 331 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(326)
+	var classof   = __webpack_require__(327)
 	  , ITERATOR  = __webpack_require__(292)('iterator')
 	  , Iterators = __webpack_require__(277);
 	module.exports = __webpack_require__(249).getIteratorMethod = function(it){
@@ -29579,7 +29690,7 @@
 	};
 
 /***/ },
-/* 332 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.3.20 SpeciesConstructor(O, defaultConstructor)
@@ -29592,11 +29703,11 @@
 	};
 
 /***/ },
-/* 333 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx                = __webpack_require__(250)
-	  , invoke             = __webpack_require__(334)
+	  , invoke             = __webpack_require__(335)
 	  , html               = __webpack_require__(290)
 	  , cel                = __webpack_require__(259)
 	  , global             = __webpack_require__(245)
@@ -29672,7 +29783,7 @@
 	};
 
 /***/ },
-/* 334 */
+/* 335 */
 /***/ function(module, exports) {
 
 	// fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -29693,11 +29804,11 @@
 	};
 
 /***/ },
-/* 335 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global    = __webpack_require__(245)
-	  , macrotask = __webpack_require__(333).set
+	  , macrotask = __webpack_require__(334).set
 	  , Observer  = global.MutationObserver || global.WebKitMutationObserver
 	  , process   = global.process
 	  , Promise   = global.Promise
@@ -29766,7 +29877,7 @@
 	};
 
 /***/ },
-/* 336 */
+/* 337 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var hide = __webpack_require__(252);
@@ -29778,7 +29889,7 @@
 	};
 
 /***/ },
-/* 337 */
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29797,7 +29908,7 @@
 	};
 
 /***/ },
-/* 338 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ITERATOR     = __webpack_require__(292)('iterator')
@@ -29823,13 +29934,13 @@
 	};
 
 /***/ },
-/* 339 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(340).create;
+	module.exports = __webpack_require__(341).create;
 
 /***/ },
-/* 340 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -29904,7 +30015,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 341 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -46641,10 +46752,10 @@
 	  }
 	}.call(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(342)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(343)(module)))
 
 /***/ },
-/* 342 */
+/* 343 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -46658,106 +46769,6 @@
 		return module;
 	}
 
-
-/***/ },
-/* 343 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _getPrototypeOf = __webpack_require__(236);
-	
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-	
-	var _classCallCheck2 = __webpack_require__(262);
-	
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-	
-	var _createClass2 = __webpack_require__(263);
-	
-	var _createClass3 = _interopRequireDefault(_createClass2);
-	
-	var _possibleConstructorReturn2 = __webpack_require__(267);
-	
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-	
-	var _inherits2 = __webpack_require__(314);
-	
-	var _inherits3 = _interopRequireDefault(_inherits2);
-	
-	var _dataService = __webpack_require__(322);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var createFragment = __webpack_require__(339);
-	var _ = __webpack_require__(341);
-	
-	var ComponentCreation = function (_React$Component) {
-	  (0, _inherits3.default)(ComponentCreation, _React$Component);
-	
-	  function ComponentCreation(props) {
-	    (0, _classCallCheck3.default)(this, ComponentCreation);
-	
-	    var _this = (0, _possibleConstructorReturn3.default)(this, (ComponentCreation.__proto__ || (0, _getPrototypeOf2.default)(ComponentCreation)).call(this, props));
-	
-	    _this.state = { componentList: [] };
-	    return _this;
-	  }
-	
-	  (0, _createClass3.default)(ComponentCreation, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var that = this;
-	      that.setState({ currentTime: new Date().getTime() });
-	      dataObject.fetchComponentList().then(function (data) {
-	        that.setState({ componentList: data });
-	      }).catch(function (err) {
-	        console.log('error recieved:', err);
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(
-	          'div',
-	          { className: 'row' },
-	          React.createElement(
-	            'div',
-	            { className: 'hidden-xs hidden-sm col-md-12 text-right' },
-	            React.createElement(
-	              'p',
-	              { className: 'infoContainer' },
-	              React.createElement(ComponentCount, { componentList: this.state.componentList }),
-	              React.createElement(CurrentTime, { currentTime: this.state.currentTime })
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'row' },
-	          'Welcome to component creation'
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'onUpdate',
-	    value: function onUpdate(val) {
-	      this.setState({
-	        data: val
-	      });
-	    }
-	  }]);
-	  return ComponentCreation;
-	}(React.Component);
-	
-	exports.default = ComponentCreation;
 
 /***/ },
 /* 344 */
@@ -46789,65 +46800,75 @@
 	
 	var _inherits3 = _interopRequireDefault(_inherits2);
 	
-	var _dataService = __webpack_require__(322);
+	var _navMenu = __webpack_require__(322);
 	
-	var _reactRouter = __webpack_require__(172);
+	var _navMenu2 = _interopRequireDefault(_navMenu);
+	
+	var _dataService = __webpack_require__(323);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var createFragment = __webpack_require__(339);
-	var _ = __webpack_require__(341);
+	var createFragment = __webpack_require__(340);
+	var _ = __webpack_require__(342);
 	
-	var NavMenu = function (_React$Component) {
-	  (0, _inherits3.default)(NavMenu, _React$Component);
+	var ComponentCreation = function (_React$Component) {
+	  (0, _inherits3.default)(ComponentCreation, _React$Component);
 	
-	  function NavMenu(props) {
-	    (0, _classCallCheck3.default)(this, NavMenu);
+	  function ComponentCreation(props) {
+	    (0, _classCallCheck3.default)(this, ComponentCreation);
 	
-	    var _this = (0, _possibleConstructorReturn3.default)(this, (NavMenu.__proto__ || (0, _getPrototypeOf2.default)(NavMenu)).call(this, props));
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (ComponentCreation.__proto__ || (0, _getPrototypeOf2.default)(ComponentCreation)).call(this, props));
 	
 	    _this.state = { componentList: [] };
 	    return _this;
 	  }
 	
-	  (0, _createClass3.default)(NavMenu, [{
+	  (0, _createClass3.default)(ComponentCreation, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var that = this;
+	      that.setState({ currentTime: new Date().getTime() });
+	      console.log('Component creation page mounted');
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return React.createElement(
 	        'div',
-	        null,
-	        'Nav menu!',
+	        { className: 'container' },
+	        React.createElement(_navMenu2.default, null),
 	        React.createElement(
-	          'ul',
-	          null,
+	          'div',
+	          { className: 'row' },
 	          React.createElement(
-	            'li',
-	            null,
+	            'div',
+	            { className: 'hidden-xs hidden-sm col-md-12 text-right' },
 	            React.createElement(
-	              _reactRouter.Link,
-	              { to: '/' },
-	              'Main'
-	            )
-	          ),
-	          React.createElement(
-	            'li',
-	            null,
-	            React.createElement(
-	              _reactRouter.Link,
-	              { to: '/create' },
-	              'Create Component'
+	              'p',
+	              { className: 'infoContainer' },
+	              'Hello world!'
 	            )
 	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          'Welcome to component creation'
 	        )
 	      );
 	    }
+	  }, {
+	    key: 'onUpdate',
+	    value: function onUpdate(val) {
+	      this.setState({
+	        data: val
+	      });
+	    }
 	  }]);
-	  return NavMenu;
+	  return ComponentCreation;
 	}(React.Component);
 	
-	;
-	
-	exports.default = NavMenu;
+	exports.default = ComponentCreation;
 
 /***/ },
 /* 345 */
@@ -49719,6 +49740,106 @@
 	
 	// exports
 
+
+/***/ },
+/* 371 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _getPrototypeOf = __webpack_require__(236);
+	
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+	
+	var _classCallCheck2 = __webpack_require__(262);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _createClass2 = __webpack_require__(263);
+	
+	var _createClass3 = _interopRequireDefault(_createClass2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(267);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(314);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
+	
+	var _navMenu = __webpack_require__(322);
+	
+	var _navMenu2 = _interopRequireDefault(_navMenu);
+	
+	var _dataService = __webpack_require__(323);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var createFragment = __webpack_require__(340);
+	var _ = __webpack_require__(342);
+	
+	var ChartistComponent = function (_React$Component) {
+	  (0, _inherits3.default)(ChartistComponent, _React$Component);
+	
+	  function ChartistComponent(props) {
+	    (0, _classCallCheck3.default)(this, ChartistComponent);
+	
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (ChartistComponent.__proto__ || (0, _getPrototypeOf2.default)(ChartistComponent)).call(this, props));
+	
+	    _this.state = { componentList: [] };
+	    return _this;
+	  }
+	
+	  (0, _createClass3.default)(ChartistComponent, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var that = this;
+	      that.setState({ currentTime: new Date().getTime() });
+	      console.log('Chartist page mounted');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(_navMenu2.default, null),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'div',
+	            { className: 'hidden-xs hidden-sm col-md-12 text-right' },
+	            React.createElement(
+	              'p',
+	              { className: 'infoContainer' },
+	              'Hello world!'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          'Welcome to chartists test'
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'onUpdate',
+	    value: function onUpdate(val) {
+	      this.setState({
+	        data: val
+	      });
+	    }
+	  }]);
+	  return ChartistComponent;
+	}(React.Component);
+	
+	exports.default = ChartistComponent;
 
 /***/ }
 /******/ ]);

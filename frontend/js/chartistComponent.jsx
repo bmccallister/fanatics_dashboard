@@ -3,7 +3,7 @@ const _ = require('lodash');
 import NavMenu from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 
-class ComponentCreation extends React.Component {
+class ChartistComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {componentList: []};
@@ -11,7 +11,7 @@ class ComponentCreation extends React.Component {
   componentDidMount() {
     var that= this;
     that.setState({currentTime: new Date().getTime()});
-    console.log('Component creation page mounted');
+    console.log('Chartist page mounted');
   }
   render () {
     return (
@@ -25,7 +25,7 @@ class ComponentCreation extends React.Component {
         </div>
       </div>
       <div className="row">
-      Welcome to component creation
+      Welcome to chartists test
       </div>
     </div>
     )
@@ -37,4 +37,4 @@ class ComponentCreation extends React.Component {
   }
 }
 
-export default ComponentCreation;
+export default ChartistComponent;
