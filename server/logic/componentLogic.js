@@ -9,7 +9,6 @@ class ComponentLogic {
     {
         componentService.getAll(callback);
     }
-
 }
 
 module.exports = ComponentLogic;

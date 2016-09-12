@@ -124,6 +124,22 @@ module.exports.tableauData = [
     "abandonedOrders": "15",
     "stuckOrders": "30",
     "conversionRate": "6"
-  }
+  },
+  "type": "pie",
+  "ignoredFields": "orders"
+},
+{
+  "timestamp": "1470669993",
+  "id": "tcs_orders_1",
+  "component": "tcs_orders",
+  "payload": {
+    "orders": "545",
+    "fulfilledOrders": "400",
+    "abandonedOrders": "15",
+    "stuckOrders": "30",
+    "conversionRate": "6"
+  },
+  "type": "bargraph",
+  "ignoredFields": "orders"
 }
 ]
