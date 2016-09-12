@@ -51,6 +51,20 @@ class ComponentDataService {
             callback(null, result);
         });
     }
+
+    static getActiveInterfaces (callback) {
+        var statement = "SELECT * FROM `" + config.couchbase.data + "`";
+        var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
+        componentData.query(query, function(error, result) 
+        {
+            if(error) 
+            {
+                return callback(error, null);
+            }
+
+            callback(null, result);
+        });
+    }
 }
 
 module.exports = ComponentDataService;

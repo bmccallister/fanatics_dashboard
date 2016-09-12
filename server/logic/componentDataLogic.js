@@ -9,6 +9,10 @@ class ComponentDataLogic
     {
         componentDataService.getComponentDataByName (name, callback);
     }  
+    static getActiveInterfaces(callback)
+    {
+        componentDataService.getActiveInterfaces(callback);
+    }
 }
 
 module.exports = ComponentDataLogic;

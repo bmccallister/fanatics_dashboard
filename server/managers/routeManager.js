@@ -42,6 +42,20 @@ const initialize = (router) => {
         });
     });
 
+    router.use('/tableau_interfaces', (req,res,next) => { 
+        componentDataLogic.getActiveInterfaces(function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    
+
 }
 
 module.exports = {

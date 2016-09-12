@@ -55,6 +55,16 @@ export class DataFetchInterface {
     setComponentList (list) {
       this.componentList = list;
     }
+    getInterfaceList () {
+      return this.interfaceList;
+    }
+    setInterfaceList (list) {
+      this.interfaceList = list;
+    }
+    initializeLists () {
+      this.componentList = [];
+      this.interfaceList = [];
+    }
     fetchComponentList () {
       var that = this;
       return new Promise(function( resolve, reject) {
@@ -69,6 +79,25 @@ export class DataFetchInterface {
         getApi(url, '').then(function(data) {
           
           that.setComponentList(data);
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    fetchActiveInterfaces() {
+      var that = this;
+      return new Promise(function( resolve, reject) {
+        console.log('inside fetch fetchActiveInterfaces!!!');
+        if (!that.interfaceList) {
+          that.interfaceList = [];
+        }
+        if (that.interfaceList.length>0) {
+          resolve(that.getInterfaceList());
+          return;
+        }
+        const url = '/api/tableau_interfaces/';
+        console.log('Using url:' + url)
+        getApi(url, '').then(function(data) {          
+          that.setInterfaceList(data);
           resolve(data);
         }).catch(reject);
       })
