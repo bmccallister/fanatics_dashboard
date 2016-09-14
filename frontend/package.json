@@ -43,6 +43,7 @@
   "license": "ISC",
   "devDependencies": {
     "bootswatch": "^3.3.7",
-    "image-webpack-loader": "^2.0.0"
+    "image-webpack-loader": "^2.0.0",
+    "react-draggable": "^2.2.2"
   }
 }

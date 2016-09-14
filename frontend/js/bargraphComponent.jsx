@@ -1,36 +1,62 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-
+import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 var ChartistGraph = require('react-chartist')
-import { DataFetchInterface, getApi } from './dataService';
-
+import { DataFetchInterface, getApi, isRemoved } from './dataService';
 
 class BarGraph extends React.Component {
   render() {
+    var myProps = this.props.data;
 
     var data = {
-      labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
-      series: [
-        [1, 2, 4, 8, 6, -2, -1, -4, -6, -2]
-      ]
+      labels: [],
+      series: [[]]
     };
 
-    var options = {
-      high: 10,
-      low: -10,
-      axisX: {
+    var max = 0, min = 0;
+
+    for (var k in myProps.payload){
+        if (myProps.payload.hasOwnProperty(k)) {
+          if (!isRemoved(myProps, k)) {
+            var val = parseInt(myProps.payload[k]);
+            if (val>max)
+              max = val;
+            if (val < min) {
+              min = val;
+            }
+            data.labels.push(k);
+            data.series[0].push(parseInt(myProps.payload[k]));
+          }
+        }
+    }
+
+    var axisX = {
         labelInterpolationFnc: function(value, index) {
           return index % 2 === 0 ? value : null;
         }
-      }
+      };
+
+    // Override for now
+    axisX = {};
+
+    var options = {
+      high: max,
+      low: min,
+      axisX: axisX
     };
 
     var type = 'Bar'
 
     return (
-      <div>
-        <ChartistGraph data={data} options={options} type={type} />
-      </div>
+      <Draggable>
+        <div className="col-md-4">
+          <div className="panel panel-default">
+            <div className="description">{myProps.id}</div>
+            <div className="panel-heading">Bar Graph</div>
+            <ChartistGraph data={data} options={options} type={type} />
+          </div>
+        </div>
+      </Draggable>
     )
   }
 }
