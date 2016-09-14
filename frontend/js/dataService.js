@@ -4,6 +4,20 @@ var socket = io.connect('http://localhost:8888');
 var checkTrailingSlash = function(str) {
     return str.substr(str.length, -1) == '/';
 }
+export const isRemoved = (obj, field) => {
+  var payload = obj.payload;
+  var ignoredFields = obj.ignoredFields.replace(' ','').toLowerCase().split(',');
+  var ret = false;
+
+  for (var i = 0 ; i < ignoredFields.length ; i++) {
+      if (field.toLowerCase() == ignoredFields[i]) {
+        ret = true;
+        return ret;
+      }
+  }
+  console.log('Returning ret:', ret)
+  return ret;
+}
 
 export const getApi = (route, param, optionalThis, optionalParam) => {
     
@@ -87,13 +101,15 @@ export class DataFetchInterface {
       var that = this;
       return new Promise(function( resolve, reject) {
         console.log('inside fetch fetchActiveInterfaces!!!');
-        if (!that.interfaceList) {
+        // Ignore caching for now so page loads
+        /*if (!that.interfaceList) {
           that.interfaceList = [];
         }
         if (that.interfaceList.length>0) {
           resolve(that.getInterfaceList());
           return;
         }
+        */
         const url = '/api/tableau_interfaces/';
         console.log('Using url:' + url)
         getApi(url, '').then(function(data) {          

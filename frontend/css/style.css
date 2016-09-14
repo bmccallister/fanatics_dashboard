@@ -45,8 +45,12 @@ body
 }
 
 .panel {
+  min-height: 250px;
     opacity: 0.95 !important;
 }
+.panel .ct-label { 
+  color: #FFF !important;
+ }
 
 .container {
     padding-top: 10px !important;

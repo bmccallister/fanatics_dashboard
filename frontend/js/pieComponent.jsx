@@ -1,38 +1,41 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 
+import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 var ChartistGraph = require('react-chartist')
-import { DataFetchInterface, getApi } from './dataService';
-
+import { DataFetchInterface, getApi, isRemoved } from './dataService';
 
 class Pie extends React.Component {
   render() {
     var myProps = this.props.data;
-    //{"component":"tcs_orders","id":"tcs_orders_1","payload":{"abandonedOrders":"15","conversionRate":"6","fulfilledOrders":"400","orders":"545","stuckOrders":"30"},"timestamp":"1470669993"};
     var data = {
-    labels: [],
-    series: []
+      labels: [],
+      series: []
     };
-    console.log('Props for data:', myProps.payload);
     
     for (var k in myProps.payload){
         if (myProps.payload.hasOwnProperty(k)) {
-          data.labels.push(k);
-          data.series.push(myProps.payload[k]);
+          if (!isRemoved(myProps, k)) {
+            data.labels.push(k);
+            data.series.push(myProps.payload[k]);
+          }
         }
     }
-    console.log('Data after:', data);
+    console.log('Pie Data:', data);
     var options = {};
 
     return (
-      <div className="col-md-4">
-        <div class="panel panel-default">
-          <ChartistGraph data={data} options={options} type={'Pie'} />
+      <Draggable>
+        <div className="col-md-4">
+          <div className="panel panel-default">
+            <div className="description">{myProps.id}</div>
+            <div className="panel-heading">TCS Load Monitoring</div>
+            <ChartistGraph data={data} options={options} type={'Pie'} />
+          </div>
         </div>
-      </div>
+      </Draggable>
     )
   }
 }
-
 
 export default Pie;
