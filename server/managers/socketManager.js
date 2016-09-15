@@ -10,41 +10,29 @@ const initialize = (io) => {
 
     io.on('connection', function(socket) 
     {
-        console.log('Socket connected.');
-        socket.on('components', function(req,res) 
+        console.log('Socket Server: Socket Connected.');
+        socket.on('components', function() 
         {
+            console.log('Socket Server: Retrieving Components');
             componentLogic.getAllComponents(function(error, results) 
             {
-                if (error) 
-                {
-                    res.status(400).send(error);
-                    return;
-                }
-                res.json(results);
+                console.log("Socket Server: Retrieved " + results.length + " components from data store.")
+                io.emit('components', results);
             });
-            io.emit('components', res);
+            
         });
 
-        socket.on('componentData', function(name, res) 
+        socket.on('componentData', function(name) 
         {
+            console.log('Socket Server: Retrieving Component Data for ' + name + '.');
             componentDataLogic.getComponentDataByName(name, (error, results) => {
-                if (error) 
-                {
-                    res.status(400).send(error);
-                    return;
-                }
-                try 
-                {
-                    var resObj = results[0]
-                    var retVal = resObj[Object.keys(resObj)[0]];
-                    res.json(retVal);
-                }
-                catch (exception) 
-                {
-                    res.status(400).send(exception);
-                }
+                var resObj = results[0]
+                var retVal = resObj[Object.keys(resObj)[0]];
+                
+                console.log('Socket Server: Retrieved Component Data for ' + name + '.');
+                io.emit('componentData', retVal);
             });
-            io.emit('componentData', res);
+            
         });
 
         socket.on('test', function(msg) 
