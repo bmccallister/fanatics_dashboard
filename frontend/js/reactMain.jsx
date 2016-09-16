@@ -2,7 +2,7 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 
-import NavMenu from './navMenu.jsx';
+import { NavMenu } from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
@@ -174,15 +174,17 @@ class FieldRepeater extends React.Component {
         if (!myObject[i].value) {
           myObject[i].value = myObject[i].value || '?';
         }
-        let indicator = 'indicator';
-        indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
-        rows.push(
-          <tr key={i}>
-            <td className={indicator}></td>
-            <td>{myObject[i].name}</td>
-            <td>{myObject[i].value}</td>
-          </tr>
-        );
+        if (myObject[i].value != '?') {
+          let indicator = 'indicator';
+          indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
+          rows.push(
+            <tr key={i}>
+              <td className={indicator}></td>
+              <td>{myObject[i].name}</td>
+              <td>{myObject[i].value}</td>
+            </tr>
+          );
+        }
       }
       return (<tbody>{rows}</tbody>);
     }
