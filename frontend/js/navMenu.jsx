@@ -3,7 +3,7 @@ const _ = require('lodash');
 import { DataFetchInterface, getApi } from './dataService';
 import { Link , Router } from 'react-router'
 
-class NavMenu extends React.Component {
+export class NavMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {componentList: []};
@@ -11,16 +11,32 @@ class NavMenu extends React.Component {
   render () {
   console.log('In render');
   	return (
-  		<div>
-  		 Nav menu! 
+  		<div className="navMenu">
   		 <ul>
-  		 <li><Link to="/">Main</Link></li>
-       <li><Link to="/create">Create Component</Link></li>
-       <li><Link to="/chartistComponent">Chartist</Link></li>
+  		 <li><Link to="/">Dashboard</Link></li>
+       <li><Link to="/create">Admin</Link></li>
   		 </ul>
   		 </div>
   	)
   }
 };
-console.log('Exporting navmenu');
-export default NavMenu;
+
+export class NavComponentMenu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {componentList: []};
+  }
+  render () {
+  console.log('In render');
+    return (
+      <div className="navComponentMenu">
+       <ul>
+       <li><Link to="/listTemplates">List Templates</Link></li>
+       <li><Link to="/createTemplate">Create Template</Link></li>
+       <li><Link to="/createComponent">Create Component from Template</Link></li>
+       <li><Link to="/listComponents">List Components</Link></li>       
+       </ul>
+       </div>
+    )
+  }
+};

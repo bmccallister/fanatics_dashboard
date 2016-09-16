@@ -27,7 +27,54 @@ body
     margin-left: 15px;
     font-size: 14pt;
 }
+.navMenu {
+  background: #333333;
+  border-bottom: 1px solid #000;
+  width: 100%;
+}
+.navComponentMenu {
+  background: #a6a6a6;
+  color: #262626;
+}
+.navComponentMenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;;
+  overflow: hidden;
+}
+.navComponentMenu ul li {
+  float: left;
+  margin: 2px 10px;
+  padding: 2px 5px;
+  text-decoration: none;
+}
+.navComponentMenu ul li a {
+  cursor: pointer;
+  color: #262626;
+}
+.navComponentMenu ul li:hover {
+  background: #CCC;  
+}
 
+.navMenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.navMenu ul li {
+  float: left;
+  margin: 2px 10px;
+  padding: 2px 5px;
+  text-decoration: none;
+}
+.navMenu ul li:hover {
+  background: #595959;  
+}
+.navMenu ul li a {
+
+  cursor: pointer;
+}
 .indicator {
     background-color: #404040;
 }
