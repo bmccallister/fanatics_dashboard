@@ -1,18 +1,18 @@
-
-const createFragment = require('react-addons-create-fragment');
-const _ = require('lodash');
-
 import NavMenu from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
-
-// Draggable 
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
-
-
 import { DataFetchInterface, getApi } from './dataService';
+
 let dataObject = new DataFetchInterface();
+
+const createFragment = require('react-addons-create-fragment');
+const _ = require('lodash');
+const cleanNum = (numStr) => {
+  const num = (numStr + '').replace('%');
+  return parseInt(num);
+}
 
 // Set up component list and initialize (Really unnecessary with constructor, remove)
 dataObject.initializeLists([]);
@@ -248,11 +248,6 @@ class RepeaterRow extends React.Component {
       );
     }
   }
-}
-
-const cleanNum = (numStr) => {
-  const num = (numStr + '').replace('%');
-  return parseInt(num);
 }
 
 class Repeater extends React.Component {
