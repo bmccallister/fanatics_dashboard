@@ -1,9 +1,9 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-import NavMenu from './navMenu.jsx';
+import { NavMenu, NavComponentMenu} from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 
-class ComponentCreation extends React.Component {
+export default class CreateComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {componentList: []};
@@ -17,6 +17,7 @@ class ComponentCreation extends React.Component {
     return (
     <div className="container">
     <NavMenu />
+    <NavComponentMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
           <p className="infoContainer">
@@ -25,7 +26,7 @@ class ComponentCreation extends React.Component {
         </div>
       </div>
       <div className="row">
-      Welcome to component creation
+        <h2> Create a new Component from a template  </h2>
       </div>
     </div>
     )
@@ -37,4 +38,3 @@ class ComponentCreation extends React.Component {
   }
 }
 
-export default ComponentCreation;

@@ -1,12 +1,9 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-import Pie from './pieComponent.jsx';
-
-import { NavMenu } from './navMenu.jsx';
-var ChartistGraph = require('react-chartist')
+import { NavMenu, NavComponentMenu} from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 
-class ChartistComponent extends React.Component {
+export default class CreateTemplate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {componentList: []};
@@ -14,26 +11,22 @@ class ChartistComponent extends React.Component {
   componentDidMount() {
     var that= this;
     that.setState({currentTime: new Date().getTime()});
-    console.log('Chartist page mounted');
+    console.log('Component creation page mounted');
   }
   render () {
-
-	console.log('Creating new item');
-
     return (
     <div className="container">
     <NavMenu />
+    <NavComponentMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
-          <div className="infoContainer whiteBg">
-          </div>
-          <div className="infoContainer whiteBg">
-			<Pie />
-          </div>          
+          <p className="infoContainer">
+          Hello world!
+          </p>
         </div>
       </div>
       <div className="row">
-      Welcome to chartists test
+        <h2> Create a new Template  </h2>
       </div>
     </div>
     )
@@ -45,4 +38,3 @@ class ChartistComponent extends React.Component {
   }
 }
 
-export default ChartistComponent;
