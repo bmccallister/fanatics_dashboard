@@ -19,17 +19,25 @@ export const isRemoved = (obj, field) => {
   return ret;
 }
 
+export const getSocket = (route, param) => {
+    console.log(route + param);
+    return new Promise(function(resolve, reject) 
+    {
+        param = param || '';
+
+        socket.emit(route, param);
+        socket.on(route, function(data){
+          resolve(data);
+        });              
+    });
+}
+
 export const getApi = (route, param, optionalThis, optionalParam) => {
     
-    return new Promise(function( resolve, reject) {
+    return new Promise(function(resolve, reject) 
+    {
         param = param || '';
         var url = route;
-
-       
-        //socket.emit('test', 'this is a test');
-        socket.on('test', function(msg){
-          console.log('client received this message: ' + msg);
-        });
               
         if (param.length>1) {
             if (!checkTrailingSlash(route)) {
