@@ -1,11 +1,16 @@
 module.exports.tableauComponents = [
-    {
+{
   "name": "tcs_load",
   "title": "TCS Load",
-  "description":"TCS Load Monitoring",
+  "description": "TCS Load Monitoring",
   "interval": "1000",
   "apiInterval": 1000,
   "acceptPush": false,
+  "Identifiers": [
+    "East Coast",
+    "West Coast",
+    "Singapore"
+  ],
   "values": [
     {
       "name": "Load",
@@ -33,6 +38,21 @@ module.exports.tableauComponents = [
       "key": "lastHour"
     },
     {
+      "name": "Hits (6 hr)",
+      "threshold": [],
+      "key": "sixHour"
+    },
+    {
+      "name": "Hits (24 hr)",
+      "threshold": [],
+      "key": "24Hour"
+    },
+    {
+      "name": "All Time Hits",
+      "threshold": [],
+      "key": "allTimeHits"
+    },
+    {
       "name": "System Health",
       "threshold": [
         "100%",
@@ -49,15 +69,48 @@ module.exports.tableauComponents = [
 },
 {
   "name": "tcs_orders",
-  "title":"TCS Orders",
+  "title": "TCS Orders",
   "description": "TCS Order Monitoring",
   "interval": "1000",
+  "Identifiers": [
+    "East Coast",
+    "West Coast",
+    "Singapore"
+  ],
   "acceptPush": false,
   "values": [
     {
       "name": "Total Orders",
       "threshold": [],
       "key": "orders"
+    },
+    {
+      "name": "Back orders",
+      "threshold": [
+        "100",
+        "50",
+        "10",
+        "0"
+      ],
+      "key": "backOrders"
+    },
+    {
+      "name": "Shared Orders",
+      "threshold": [
+        "5%",
+        "3%",
+        "0%"
+      ],
+      "key": "sharedOrders"
+    },
+    {
+      "name": "Saved Orders",
+      "threshold": [
+        "5%",
+        "3%",
+        "0%"
+      ],
+      "key": "savedOrders"
     },
     {
       "name": "Fulfilled Orders",
