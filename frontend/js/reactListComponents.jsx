@@ -3,6 +3,8 @@ const _ = require('lodash');
 import { NavMenu, NavComponentMenu} from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 
+
+
 export default class ListTemplates extends React.Component {
   constructor(props) {
     super(props);
@@ -11,9 +13,14 @@ export default class ListTemplates extends React.Component {
   componentDidMount() {
     var that= this;
     that.setState({currentTime: new Date().getTime()});
-    console.log('Component creation page mounted');
+	const url = '/api/tableau_components';
+	console.log('Fetching url,' + url);
+	getApi(url, name).then(function(data) {
+		this.setState({componentList:data});
+	});
   }
   render () {
+  	console.log('Rendering with this state:', this.state.componentList);
     return (
     <div className="container">
     <NavMenu />
