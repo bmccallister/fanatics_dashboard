@@ -1,4 +1,4 @@
-import NavMenu from './navMenu.jsx';
+import { NavMenu } from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
