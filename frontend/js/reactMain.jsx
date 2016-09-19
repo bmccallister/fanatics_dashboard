@@ -1,18 +1,18 @@
-
-const createFragment = require('react-addons-create-fragment');
-const _ = require('lodash');
-
-import { NavMenu } from './navMenu.jsx';
+import NavMenu from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
-
-// Draggable 
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
-
-
 import { DataFetchInterface, getApi } from './dataService';
+
 let dataObject = new DataFetchInterface();
+
+const createFragment = require('react-addons-create-fragment');
+const _ = require('lodash');
+const cleanNum = (numStr) => {
+  const num = (numStr + '').replace('%');
+  return parseInt(num);
+}
 
 // Set up component list and initialize (Really unnecessary with constructor, remove)
 dataObject.initializeLists([]);
@@ -181,17 +181,15 @@ class FieldRepeater extends React.Component {
         if (!myObject[i].value) {
           myObject[i].value = myObject[i].value || '?';
         }
-        if (myObject[i].value != '?') {
-          let indicator = 'indicator';
-          indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
-          rows.push(
-            <tr key={i}>
-              <td className={indicator}></td>
-              <td>{myObject[i].name}</td>
-              <td>{myObject[i].value}</td>
-            </tr>
-          );
-        }
+        let indicator = 'indicator';
+        indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
+        rows.push(
+          <tr key={i}>
+            <td className={indicator}></td>
+            <td>{myObject[i].name}</td>
+            <td>{myObject[i].value}</td>
+          </tr>
+        );
       }
       return (<tbody>{rows}</tbody>);
     }
@@ -257,11 +255,6 @@ class RepeaterRow extends React.Component {
       );
     }
   }
-}
-
-const cleanNum = (numStr) => {
-  const num = (numStr + '').replace('%');
-  return parseInt(num);
 }
 
 class Repeater extends React.Component {

@@ -16,7 +16,7 @@ const initialize = (io) => {
             console.log('Socket Server: Retrieving Components');
             componentLogic.getAllComponents(function(error, results) 
             {
-                console.log("Socket Server: Retrieved " + results.length + " components from data store.")
+                console.log("Socket Server: Retrieved " + results.length + " components from data store.");
                 io.emit('components', results);
             });
             
@@ -26,7 +26,7 @@ const initialize = (io) => {
         {
             console.log('Socket Server: Retrieving Component Data for ' + name + '.');
             componentDataLogic.getComponentDataByName(name, (error, results) => {
-                var resObj = results[0]
+                var resObj = results[0];
                 var retVal = resObj[Object.keys(resObj)[0]];
                 
                 console.log('Socket Server: Retrieved Component Data for ' + name + '.');
