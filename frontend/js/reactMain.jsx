@@ -20,9 +20,11 @@ dataObject.initializeLists([]);
 class ComponentContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {componentList: [], interfaceList: []};
+    this.state = {componentList: [], interfaceList: [], };
   }
   componentDidMount() {
+
+    this._isMounted = true;
     var that= this;
     that.setState({currentTime: new Date().getTime()});
     dataObject.fetchComponentList().then(function(componentData) {
@@ -32,10 +34,15 @@ class ComponentContainer extends React.Component {
     }).catch(function(err) {
       console.log('error recieved:', err);
     });
-    console.log('Setting interfval on tick');
     this.timer = setInterval(this.tick.bind(this), 3000);
   }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   tick() {
+    if (!this._isMounted) {
+      return;
+    }
     console.log('ComponentContainer tick:', this);
     const self = this;
     const updateComponentData = () => {
@@ -269,7 +276,9 @@ class Repeater extends React.Component {
       this.enabledTimer = false;
     }
     tick() {
-
+      if (!this.enabledTimer) {
+        return;
+      }
       console.log('Object tick:', this);
       const self = this;
       

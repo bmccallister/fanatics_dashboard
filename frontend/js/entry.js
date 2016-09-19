@@ -16,6 +16,7 @@ import ListTemplates from './reactListTemplates.jsx';
 import ListComponents from './reactListComponents.jsx';
 import CreateTemplate from './reactCreateTemplate.jsx';
 import CreateComponent from './reactCreateComponent.jsx';
+import EditTemplate from './reactEditTemplate.jsx';
 
 import Component from './reactCreateComponent.jsx';
 import { NavMenu } from './navMenu.jsx';
@@ -43,6 +44,7 @@ render((
 			<Route path="/createTemplate" component={CreateTemplate} />
 			<Route path="/createComponent" component={CreateComponent} />			
 			<Route path="/listComponents" component={ListComponents} />
+			<Route path="/editTemplate" path="/:templateName" component={EditTemplate} />
 			<Route path="*" component={NoMatch} />
 		</Router>
 	</div>

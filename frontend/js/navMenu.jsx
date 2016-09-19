@@ -15,6 +15,7 @@ export class NavMenu extends React.Component {
   		 <ul>
   		 <li><Link to="/">Dashboard</Link></li>
        <li><Link to="/create">Admin</Link></li>
+       <li><Link to="/editTemplate">Edit</Link></li>
   		 </ul>
   		 </div>
   	)
