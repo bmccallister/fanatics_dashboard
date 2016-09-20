@@ -5,8 +5,8 @@ var _ = require('lodash');
 var couchbase = require("couchbase");
 var sampleData = require('./sampleData');
 var db = (new couchbase.Cluster(config.couchbase.server));
-var tableauData = db.openBucket('tableau_data');
-var tableauComponents = db.openBucket('tableau_components');
+var components = db.openBucket('components');
+var templates = db.openBucket('templates');
 
 
 var processNext = function(obj, i, arr, key) {
@@ -66,10 +66,10 @@ var upsert = function(obj, data, key) {
     });
 }
 
-processAll(tableauComponents, sampleData.tableauComponents, 'name', function() {
+processAll(templates, sampleData.templates, 'name', function() {
     console.log('Tableau Components created, resetting counter and beginning data');
     remainingComponents = 0;
-    processAll(tableauData, sampleData.tableauData, 'id', function() {
+    processAll(components, sampleData.components, 'id', function() {
         console.log('All tableau data created, exiting');
         process.exit(0)
     });

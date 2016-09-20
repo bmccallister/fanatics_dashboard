@@ -1,25 +1,24 @@
 
-var socket = io.connect('http://localhost:8888');
+//var socket = io.connect('http://localhost:8888');
 
 var checkTrailingSlash = function(str) {
     return str.substr(str.length, -1) == '/';
 }
 export const isRemoved = (obj, field) => {
-  var payload = obj.payload;
-  var ignoredFields = obj.ignoredFields.replace(' ','').toLowerCase().split(',');
   var ret = false;
-
+  /*var payload = obj.payload;
+  var ignoredFields = obj.ignoredFields.replace(' ','').toLowerCase().split(',');
   for (var i = 0 ; i < ignoredFields.length ; i++) {
       if (field.toLowerCase() == ignoredFields[i]) {
         ret = true;
         return ret;
       }
   }
-  console.log('Returning ret:', ret)
+  console.log('Returning ret:', ret)*/
   return ret;
 }
 
-export const getSocket = (route, param) => {
+/*export const getSocket = (route, param) => {
     console.log(route + param);
     return new Promise(function(resolve, reject) 
     {
@@ -30,7 +29,7 @@ export const getSocket = (route, param) => {
           resolve(data);
         });              
     });
-}
+}*/
 
 export const getApi = (route, param, optionalThis, optionalParam) => {
     
@@ -69,7 +68,13 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
 export class DataFetchInterface {
     constructor() {
       
-      this.componentList = this.componentList || [];
+      this.templateList = this.templateList || [];
+    }
+    getTemplateList () {
+      return this.templateList;
+    }
+    setTemplateList (list) {
+      this.templateList = list;
     }
     getComponentList () {
       return this.componentList;
@@ -77,51 +82,46 @@ export class DataFetchInterface {
     setComponentList (list) {
       this.componentList = list;
     }
-    getInterfaceList () {
-      return this.interfaceList;
-    }
-    setInterfaceList (list) {
-      this.interfaceList = list;
-    }
     initializeLists () {
+      this.templateList = [];
       this.componentList = [];
-      this.interfaceList = [];
     }
-    fetchComponentList () {
+    fetchTemplateList () {
       var that = this;
       return new Promise(function( resolve, reject) {
-        if (!that.componentList) {
-          that.componentList = [];
+        if (!that.templateList) {
+          that.templateList = [];
         }
-        if (that.componentList.length>0) {
-          resolve(that.getComponentList());
+        if (that.templateList.length>0) {
+          resolve(that.getTemplateList());
           return;
         }
-        const url = '/api/tableau_components/';
+        const url = '/api/templates';
         getApi(url, '').then(function(data) {
           
-          that.setComponentList(data);
+          that.setTemplateList(data);
           resolve(data);
         }).catch(reject);
       })
     }
-    fetchActiveInterfaces() {
+    fetchComponentList() {
       var that = this;
       return new Promise(function( resolve, reject) {
-        console.log('inside fetch fetchActiveInterfaces!!!');
+        console.log('inside fetch fetchComponents!!!');
         // Ignore caching for now so page loads
-        /*if (!that.interfaceList) {
-          that.interfaceList = [];
+        /*if (!that.ComponentList) {
+          that.ComponentList = [];
         }
-        if (that.interfaceList.length>0) {
-          resolve(that.getInterfaceList());
+        if (that.ComponentList.length>0) {
+          resolve(that.getComponentList());
           return;
         }
         */
-        const url = '/api/tableau_interfaces/';
+        const url = '/api/components';
         console.log('Using url:' + url)
         getApi(url, '').then(function(data) {          
-          that.setInterfaceList(data);
+          that.setComponentList(data);
+          console.log('Component Data:' + data);
           resolve(data);
         }).catch(reject);
       })
