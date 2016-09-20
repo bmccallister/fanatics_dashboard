@@ -1,16 +1,55 @@
 "use strict";
 
 const _ = require('lodash');
+const templateLogic = require("../logic/templateLogic");
 const componentLogic = require("../logic/componentLogic");
-const componentDataLogic = require("../logic/componentDataLogic");
 
 //Router endpoints
 const initialize = (router) => {
-    router.use('/tableau_components/:component', (req,res,next) => {
-        
-        var component = req.params.component;
-                
-        componentLogic.getComponentDataByName(req.params.component, (error, results) => {
+
+
+    //Get distinct contexts
+    router.use('/contexts', (req,res,next) => { 
+        componentLogic.getDistinctContexts(function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    //Get all templates
+    router.use('/templates', (req,res,next) => { 
+        templateLogic.getAllTemplates(function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    //Get all components by context
+    router.use('/components/context/:context', (req,res,next) => { 
+        componentLogic.getComponentsByContext(req.params.context, (error, results) => {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    //Get a specific component by its component ID
+    router.use('/component/:ID', (req,res,next) => {
+                        
+        componentLogic.getComponentByID(req.params.ID, (error, results) => {
             if (error) 
             {
                 res.status(400).send(error);
@@ -30,7 +69,8 @@ const initialize = (router) => {
 
     });
     
-    router.use('/tableau_components', (req,res,next) => { 
+    //Get all components
+    router.use('/components', (req,res,next) => { 
         componentLogic.getAllComponents(function(error, results) 
         {
             if (error) 
@@ -41,20 +81,6 @@ const initialize = (router) => {
             res.json(results);
         });
     });
-
-    router.use('/tableau_interfaces', (req,res,next) => { 
-        componentDataLogic.getActiveInterfaces(function(error, results) 
-        {
-            if (error) 
-            {
-                res.status(400).send(error);
-                return;
-            }
-            res.json(results);
-        });
-    });
-
-    
 
 }
 

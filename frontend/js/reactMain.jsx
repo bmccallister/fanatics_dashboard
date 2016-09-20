@@ -10,7 +10,8 @@ let dataObject = new DataFetchInterface();
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 const cleanNum = (numStr) => {
-  const num = (numStr + '').replace('%');
+  const num = (numStr).replace('%', '');
+  //console.log('Parsed Number: ' + num);
   return parseInt(num);
 }
 
@@ -20,20 +21,21 @@ dataObject.initializeLists([]);
 class ComponentContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {componentList: [], interfaceList: [], };
+    this.state = {templateList: [], componentList: [], };
   }
   componentDidMount() {
 
     this._isMounted = true;
-    var that= this;
-    that.setState({currentTime: new Date().getTime()});
-    dataObject.fetchComponentList().then(function(componentData) {
-        dataObject.fetchActiveInterfaces().then(function(data) { 
-          that.setState({componentList:componentData, interfaceList:data});
-        });
-    }).catch(function(err) {
-      console.log('error recieved:', err);
-    });
+    var self = this;
+    self.setState({currentTime: new Date().getTime()});
+
+    dataObject.fetchTemplateList().then(function(templateData) {
+          dataObject.fetchComponentList().then(function(componentdata) { 
+            self.setState({templateList:templateData, componentList:componentdata});
+          });
+      }).catch(function(err) {
+        console.log('error recieved:', err);
+      });
     this.timer = setInterval(this.tick.bind(this), 3000);
   }
   componentWillUnmount() {
@@ -43,13 +45,13 @@ class ComponentContainer extends React.Component {
     if (!this._isMounted) {
       return;
     }
-    console.log('ComponentContainer tick:', this);
+    //console.log('ComponentContainer tick:', this);
     const self = this;
     const updateComponentData = () => {
-      console.log('Getting component list and active interfaces');
-        dataObject.fetchComponentList().then(function(componentData) {
-          dataObject.fetchActiveInterfaces().then(function(data) { 
-            self.setState({componentList:componentData, interfaceList:data});
+      //console.log('Getting templates and components');
+        dataObject.fetchTemplateList().then(function(templateData) {
+          dataObject.fetchComponentList().then(function(componentdata) { 
+            self.setState({templateList:templateData, componentList:componentdata});
           });
       }).catch(function(err) {
         console.log('error recieved:', err);
@@ -58,20 +60,20 @@ class ComponentContainer extends React.Component {
     updateComponentData();
   }
   render () {
-    console.log('From the component container, interface list is:', this.state.interfaceList);
+    //console.log('From the component container, component list is:', this.state.componentList);
     return (
     <div className="container">
     <NavMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
           <div className="infoContainer">
-            <ComponentCount componentList={this.state.interfaceList} />
+            <ComponentCount templateList={this.state.templateList} />
             <CurrentTime currentTime={this.state.currentTime} />
           </div>
         </div>
       </div>
       <div className="row">
-        <Repeater interfaceList={this.state.interfaceList} componentList={this.state.componentList} />
+        <Repeater templateList={this.state.templateList} componentList={this.state.componentList} />
       </div>
     </div>
     )
@@ -86,11 +88,11 @@ class ComponentContainer extends React.Component {
 
 class ComponentCount extends React.Component {
   render () {
-  console.log('Rendering component count')
-    const componentList = this.props.componentList || []
+  //console.log('Rendering template count')
+    const templateList = this.props.templateList || []
     return (
       <div>
-        Now monitoring {componentList.length} systems
+        Now monitoring {templateList.length} systems
       </div>
     );
   }
@@ -127,7 +129,7 @@ class ComponentOptions extends React.Component {
 
 const establishIndicator = (val, arrayArg) => {
   const thresholdArray = arrayArg;
-  let indicator = '';
+  let indicator ='';
   
   const determineAsc = (val, thresholdArray) => {
     var indicator = '';
@@ -154,18 +156,22 @@ const establishIndicator = (val, arrayArg) => {
     if (val<=cleanNum(thresholdArray[2])) {
       indicator += ' red';
     }
+    
     return indicator;
   }
   console.log('Checking thresholdarray');
   if (thresholdArray.length < 1) {
     indicator+=' green';
   } else {
+    console.log(thresholdArray[0] + " : " + thresholdArray[1]);
     const TopVal = cleanNum(thresholdArray[0]);
     const SecondVal = cleanNum(thresholdArray[1]);
     
     if (TopVal > SecondVal) {
+      console.log('true');
       indicator = determineDesc(val, thresholdArray);
     } else {
+      console.log('false');
       indicator = determineAsc(val, thresholdArray);
     }
   }
@@ -182,6 +188,7 @@ class FieldRepeater extends React.Component {
           myObject[i].value = myObject[i].value || '?';
         }
         let indicator = 'indicator';
+        console.log(myObject[i]);
         indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
         rows.push(
           <tr key={i}>
@@ -194,12 +201,12 @@ class FieldRepeater extends React.Component {
       return (<tbody>{rows}</tbody>);
     }
 }
-const mergeComponentData = (componentList, interfaceObject) => {
-  _.each(componentList, function(row) {
-    if (interfaceObject.component == row.components.name) {
-      interfaceObject.title = row.components.title;
-      interfaceObject.description = row.components.description;
-      interfaceObject.values = row.components.values;
+const mergeComponentData = (templateList, component) => {
+  _.each(templateList, function(row) {
+    if (component.template == row.templates.name) {
+      component.title = row.templates.title;
+      component.description = row.templates.description;
+      component.values = row.templates.dataDefinition; 
       return;
     }
   });
@@ -226,28 +233,27 @@ class RepeaterRow extends React.Component {
       this.setState({activeDrags: --this.state.activeDrags});
     }
   render() {
-    var myComponents = this.props.componentList;
-    var myParentObject = this.props.interfaceList[this.props.index].tableau_data;
-    mergeComponentData(myComponents, myParentObject);
+    var templates = this.props.templateList;
+    var component = this.props.componentList[this.props.index].components;
+    mergeComponentData(templates, component);
 
-    var myObject = myParentObject;
-    if (myObject.type=='pie') {
+    if (component.type=='pie') {
       return (
-        <Pie data={myObject}/>
+        <Pie data={component}/>
       )
-    } else if (myObject.type=='bargraph') {
+    } else if (component.type=='bargraph') {
       return (
-        <BarGraph data={myObject}/>
+        <BarGraph data={component}/>
       )
     } else {
       return (
        <Draggable>
           <div className="col-md-4">
             <div className="panel panel-default">
-              <div className="description">{myObject.title}</div>
-              <div className="panel-heading">{myObject.description}</div>
+              <div className="description">{component.title}</div>
+              <div className="panel-heading">{component.description}</div>
               <table className="table table-striped table-bordered">
-                <FieldRepeater valuesData={myObject.values} />
+                <FieldRepeater valuesData={component.values} />
               </table>
             </div>
           </div>
@@ -283,7 +289,7 @@ class Repeater extends React.Component {
           return false;
         }
         const limit = self.props.componentList.length;
-        const url = '/api/tableau_components/';
+        
         console.log('I have a limit of:', limit)
         const processNext = function(cb) {
           if (i >= limit) {
@@ -293,9 +299,11 @@ class Repeater extends React.Component {
           }
           const row = self.props.componentList[i].components;
           i++;
-          const name = row.name;
-          console.log('Fetching url,' + url);
-          getApi(url, name).then(function(data) {
+          const id = row.id;
+
+          const url = '/api/component/';
+          console.log('Fetching url,' + url + id);
+          getApi(url, id).then(function(data) {
             _.each(row.values, function(valueRow) {
               if (data.payload[valueRow.key]) {
               valueRow.value = data.payload[valueRow.key];
@@ -329,12 +337,12 @@ class Repeater extends React.Component {
       let rows = [];
       const self = this;
       
+      var templateListTemp = self.props.templateList;
       var componentListTemp = self.props.componentList;
-      var interfaceListTemp = self.props.interfaceList;
-      console.log('upstream from render repeaterrow, the interfaceListTemp is ', interfaceListTemp)
-      for (var i = 0 ; i < interfaceListTemp.length ; i++) {
+      //console.log('upstream from render repeaterrow, the componentListTemp is ', componentListTemp)
+      for (var i = 0 ; i < componentListTemp.length ; i++) {
         //var componentListTemp = createFragment(componentListTemp);
-        rows.push(<RepeaterRow key={i} index={i} componentList={componentListTemp} interfaceList={interfaceListTemp} />);
+        rows.push(<RepeaterRow key={i} index={i} templateList={templateListTemp} componentList={componentListTemp} />);
       }
       return (
       <div>
