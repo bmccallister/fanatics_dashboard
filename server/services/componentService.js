@@ -21,6 +21,20 @@ class ComponentService {
             callback(null, {message: "success", data: result});
         });
     }
+    static getComponentDataByName (name, callback) {
+        let statement = "SELECT * FROM `" + config.couchbase.components + "` where name=$1";
+        let query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
+        console.log(query, name);
+        components.query(query, [name], function(error, result) 
+        {
+            if (error) 
+            {
+                return callback(error, null);
+            }
+            
+            callback(null, result);
+        });
+    }
 
     static getAll (callback) {
         const statement = "SELECT * FROM `" + config.couchbase.components + "` AS components";

@@ -45,6 +45,7 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
             }
             url += param;
         }
+        console.log('Full url request:', url);
         $.ajax({
           url: url,
           dataType: 'json',

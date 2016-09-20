@@ -27,12 +27,33 @@ const myLogger = (req, res, next) => {
   //console.log('Request:', req);
   next();
 };
+const sendFile = (filename, res) => {
+  fs.readFile(filename, "binary", function(err, file) {
+      if(err) {        
+        res.writeHead(500, {"Content-Type": "text/plain"});
+        res.write(err + "\n");
+        res.end();
+        return;
+      }
 
+      res.writeHead(200);
+      res.write(file, "binary");
+      res.end();
+    });
+  return;
+}
 
 const passThrough = (req,res,next) => {
-  const uri = url.parse(req.url).pathname;
+  let uri = url.parse(req.url).pathname;
   let filename = path.join(path.join(process.cwd(),'../frontend/pages'), uri);
-  
+  console.log('Request for file is: ', filename);
+  if (filename.indexOf('.')<0) {
+      uri = 'index.html';
+      filename = path.join(path.join(process.cwd(),'../frontend/pages'), uri);
+      console.log('No period, forcing file out:', filename);
+      sendFile(filename, res);
+      return;
+  }
   fs.exists(filename, function(exists) {
     if(!exists) {
       res.writeHead(404, {"Content-Type": "text/plain"});
@@ -45,18 +66,7 @@ const passThrough = (req,res,next) => {
       filename += '/index.html';
     }
 
-    fs.readFile(filename, "binary", function(err, file) {
-      if(err) {        
-        res.writeHead(500, {"Content-Type": "text/plain"});
-        res.write(err + "\n");
-        res.end();
-        return;
-      }
-
-      res.writeHead(200);
-      res.write(file, "binary");
-      res.end();
-    });
+    sendFile(filename, res);
   });
 }
 
