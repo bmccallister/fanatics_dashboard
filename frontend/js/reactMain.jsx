@@ -129,7 +129,7 @@ class ComponentOptions extends React.Component {
 
 const establishIndicator = (val, arrayArg) => {
   const thresholdArray = arrayArg;
-  let indicator = '';
+  let indicator ='';
   
   const determineAsc = (val, thresholdArray) => {
     var indicator = '';
