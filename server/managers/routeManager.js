@@ -10,7 +10,7 @@ const initialize = (router) => {
         
         var component = req.params.component;
                 
-        componentDataLogic.getComponentDataByName(req.params.component, (error, results) => {
+        componentLogic.getComponentDataByName(req.params.component, (error, results) => {
             if (error) 
             {
                 res.status(400).send(error);

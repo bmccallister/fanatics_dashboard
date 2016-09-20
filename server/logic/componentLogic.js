@@ -9,6 +9,11 @@ class ComponentLogic {
     {
         componentService.getAll(callback);
     }
+
+    static getComponentDataByName(name, callback)
+    {
+        componentService.getComponentDataByName (name, callback);
+    }  
 }
 
 module.exports = ComponentLogic;

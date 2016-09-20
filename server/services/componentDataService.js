@@ -23,20 +23,6 @@ class ComponentDataService {
         });
     }
 
-    static getComponentDataByName (name, callback) {
-        let statement = "SELECT * FROM `" + config.couchbase.data + "` where component=$1";
-        let query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
-        
-        componentData.query(query, [name], function(error, result) 
-        {
-            if (error) 
-            {
-                return callback(error, null);
-            }
-            
-            callback(null, result);
-        });
-    }
 
     static getAll (callback) {
         var statement = "SELECT * FROM `" + config.couchbase.data + "`";
