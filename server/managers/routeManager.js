@@ -21,8 +21,24 @@ const initialize = (router) => {
         });
     });
 
+
+    //Get template by name
+    router.use('/templates/:template', (req,res,next) => { 
+        console.log('Using get template by name')
+        templateLogic.getTemplateByName(req.params.template, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
     //Get all templates
-    router.use('/templates', (req,res,next) => { 
+    router.use('/templates', (req,res,next) => {  
+        console.log('Using get all templates')
         templateLogic.getAllTemplates(function(error, results) 
         {
             if (error) 
@@ -33,6 +49,8 @@ const initialize = (router) => {
             res.json(results);
         });
     });
+
+    
 
     //Get all components by context
     router.use('/components/context/:context', (req,res,next) => { 

@@ -1,9 +1,11 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 import { NavMenu, NavComponentMenu} from './navMenu.jsx';
-import { DataFetchInterface, getApi } from './dataService';
+import { DataFetchInterface } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
+
+let dataObject = new DataFetchInterface();
 
 const renderObject = (data) => {
   var contents = '<div class="row">';
@@ -183,10 +185,10 @@ export default class EditTemplate extends React.Component {
     	const url = '/api/tableau_components/';
       console.log('Using templateName:', templateName);
       this.setState({templateName:templateName});
-      console.log('Now calling getApi:', url)
-      getApi(url, templateName).then(function(data) {
+      console.log('Calling fetch template list with name:', templateName);
+    dataObject.fetchTemplateList(templateName).then(function(data) {
         console.log('Got back data and setting templateData:', data);
-        that.setState ({templateData:data});
+        that.setState ({templateData:data[0].templates});
       }).catch(function(err) {
         console.log('Error:', err);
         throw(err);

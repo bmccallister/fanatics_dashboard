@@ -40,7 +40,7 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
               
         if (param.length>1) {
             if (!checkTrailingSlash(route)) {
-                route+='/';
+                url+='/';
             }
             url += param;
         }
@@ -87,8 +87,9 @@ export class DataFetchInterface {
       this.templateList = [];
       this.componentList = [];
     }
-    fetchTemplateList () {
+    fetchTemplateList (name) {
       var that = this;
+      name = name || '';
       return new Promise(function( resolve, reject) {
         if (!that.templateList) {
           that.templateList = [];
@@ -98,15 +99,16 @@ export class DataFetchInterface {
           return;
         }
         const url = '/api/templates';
-        getApi(url, '').then(function(data) {
+        getApi(url, name).then(function(data) {
           
           that.setTemplateList(data);
           resolve(data);
         }).catch(reject);
       })
     }
-    fetchComponentList() {
+    fetchComponentList(name) {
       var that = this;
+      name = name || '';
       return new Promise(function( resolve, reject) {
         console.log('inside fetch fetchComponents!!!');
         // Ignore caching for now so page loads
@@ -120,7 +122,7 @@ export class DataFetchInterface {
         */
         const url = '/api/components';
         console.log('Using url:' + url)
-        getApi(url, '').then(function(data) {          
+        getApi(url, name).then(function(data) {          
           that.setComponentList(data);
           console.log('Component Data:' + data);
           resolve(data);
