@@ -2,7 +2,9 @@
 //var socket = io.connect('http://localhost:8888');
 
 var checkTrailingSlash = function(str) {
-    return str.substr(str.length, -1) == '/';
+  var char = str.split('').reverse()[0];
+  console.log('Checking trailing slash against:',char)
+  return  char == '/';
 }
 export const isRemoved = (obj, field) => {
   var ret = false;
@@ -58,8 +60,7 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
             resolve(data);
           }.bind(this),
           error: function(xhr, status, err) {
-            console.log('Caught error:', err)
-            console.error(this.props.url, status, err.toString());
+            console.error('Caught error on url:', url, err, xhr, status)
             reject(err);
           }.bind(this)
         });
@@ -122,7 +123,8 @@ export class DataFetchInterface {
         */
         const url = '/api/components';
         console.log('Using url:' + url)
-        getApi(url, name).then(function(data) {          
+        getApi(url, name).then(function(data) {     
+          console.log('Get api returned');     
           that.setComponentList(data);
           console.log('Component Data:' + data);
           resolve(data);
