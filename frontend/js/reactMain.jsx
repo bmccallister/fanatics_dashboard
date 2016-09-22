@@ -5,6 +5,7 @@ import ChartistComponent from './chartistComponent.jsx';
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { DataFetchInterface, getApi } from './dataService';
 
+var socket = io.connect('http://localhost:8888');
 let dataObject = new DataFetchInterface();
 
 const createFragment = require('react-addons-create-fragment');
@@ -25,39 +26,52 @@ class ComponentContainer extends React.Component {
   }
   componentDidMount() {
 
-    this._isMounted = true;
+    this._isMounted = false;
     var self = this;
-    self.setState({currentTime: new Date().getTime()});
 
-    dataObject.fetchTemplateList().then(function(templateData) {
-          dataObject.fetchComponentList().then(function(componentdata) { 
-            self.setState({templateList:templateData, componentList:componentdata});
-          });
-      }).catch(function(err) {
-        console.log('error recieved:', err);
-      });
-    this.timer = setInterval(this.tick.bind(this), 3000);
+    self.setState({currentTime: new Date().getTime()});
+    
+    socket.emit("templates", '');
+    socket.on("templates", function(templateData)
+    {
+      socket.emit("components", '');
+      socket.on("components", function(componentData)
+      {
+        self.setState({templateList:templateData, componentList:componentData});
+
+        if (!self.state.componentList) 
+        {
+            console.log('No component list defined');
+        }
+        else
+        {
+            for (var i = 0; i < self.state.componentList.length; i++)
+            {
+                const componentData = self.state.componentList[i].components;
+                
+                socket.emit("componentByID", componentData.id);
+                socket.on("componentByID", function(data)
+                {
+                    for (var j = 0; j < componentData.values.length; j++)
+                    {
+                      var componentDataRow = componentData.values[j];
+                      if (data.payload[componentDataRow.key]) 
+                      {
+                        componentDataRow.value = data.payload[componentDataRow.key];
+                      }
+                    }
+
+                    self.setState ({componentData:data});
+                });  
+            }
+        }
+      }); 
+    });  
+
+
   }
   componentWillUnmount() {
     this._isMounted = false;
-  }
-  tick() {
-    if (!this._isMounted) {
-      return;
-    }
-    //console.log('ComponentContainer tick:', this);
-    const self = this;
-    const updateComponentData = () => {
-      //console.log('Getting templates and components');
-        dataObject.fetchTemplateList().then(function(templateData) {
-          dataObject.fetchComponentList().then(function(componentdata) { 
-            self.setState({templateList:templateData, componentList:componentdata});
-          });
-      }).catch(function(err) {
-        console.log('error recieved:', err);
-      });
-    }
-    updateComponentData();
   }
   render () {
     //console.log('From the component container, component list is:', this.state.componentList);
@@ -109,9 +123,10 @@ class CurrentTime extends React.Component {
 }
 
 class ComponentOptions extends React.Component {
-  constructor(props) {
+  constructor(props) 
+  {
     super(props);
-  this.update = this.update.bind(this);
+    this.update = this.update.bind(this);
   }
   render() {
     return (
@@ -159,19 +174,19 @@ const establishIndicator = (val, arrayArg) => {
     
     return indicator;
   }
-  console.log('Checking thresholdarray');
+  //console.log('Checking thresholdarray');
   if (thresholdArray.length < 1) {
     indicator+=' green';
   } else {
-    console.log(thresholdArray[0] + " : " + thresholdArray[1]);
+    //console.log(thresholdArray[0] + " : " + thresholdArray[1]);
     const TopVal = cleanNum(thresholdArray[0]);
     const SecondVal = cleanNum(thresholdArray[1]);
     
     if (TopVal > SecondVal) {
-      console.log('true');
+      //console.log('true');
       indicator = determineDesc(val, thresholdArray);
     } else {
-      console.log('false');
+      //console.log('false');
       indicator = determineAsc(val, thresholdArray);
     }
   }
@@ -180,7 +195,7 @@ const establishIndicator = (val, arrayArg) => {
 
 class FieldRepeater extends React.Component {
     render() {
-    console.log('Checking values data against object:', this.props);
+    //console.log('Checking values data against object:', this.props);
       const myObject = this.props.valuesData;
       let rows = [];
       for (var i = 0 ; i < myObject.length ; i++) {
@@ -188,7 +203,7 @@ class FieldRepeater extends React.Component {
           myObject[i].value = myObject[i].value || '?';
         }
         let indicator = 'indicator';
-        console.log(myObject[i]);
+        //console.log(myObject[i]);
         indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
         rows.push(
           <tr key={i}>
@@ -268,70 +283,10 @@ class Repeater extends React.Component {
       super(props);
     }
     componentDidMount () {
-      this.enabledTimer = true;
-      this.timer = setInterval(this.tick.bind(this), 3000);
+      this.enabledTimer = false;
     }
     componentWillUnmount () {
       this.enabledTimer = false;
-    }
-    tick() {
-      if (!this.enabledTimer) {
-        return;
-      }
-      console.log('Object tick:', this);
-      const self = this;
-      
-      const updateComponentData = () => {
-        console.log('In update component data');
-        let i = 0;
-        if (!self.props.componentList) {
-          console.log('No component list defined');
-          return false;
-        }
-        const limit = self.props.componentList.length;
-        
-        console.log('I have a limit of:', limit)
-        const processNext = function(cb) {
-          if (i >= limit) {
-            // Process final cb
-            cb(true);
-            return;
-          }
-          const row = self.props.componentList[i].components;
-          i++;
-          const id = row.id;
-
-          const url = '/api/component/';
-          console.log('Fetching url,' + url + id);
-          getApi(url, id).then(function(data) {
-            _.each(row.values, function(valueRow) {
-              if (data.payload[valueRow.key]) {
-              valueRow.value = data.payload[valueRow.key];
-              }
-            })
-            self.setState ({componentData:data});
-            processNext(cb);
-          }).catch(function(err) {
-            console.log('Error:', err);
-            cb(false);
-          });
-        }
-        
-        
-        const finalCb = (bVal) => {
-          //console.log('Final callback called');
-        }
-        if (self.props.componentList.length < 1) {
-          finalCb();
-          return;
-        } else {
-          processNext(finalCb);
-        }
-        
-      }
-      if (self.enabledTimer) {
-        updateComponentData();
-      }
     }
     render() {
       let rows = [];
