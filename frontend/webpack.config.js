@@ -1,3 +1,6 @@
+var path = require('path');
+var webpack = require('webpack');
+
 module.exports = {
     entry: "./js/entry.js",
     output: {
@@ -20,7 +23,16 @@ module.exports = {
               }
         ]
     },
-    devtool: 'source-map',
+    plugins: [
+    new webpack.optimize.OccurenceOrderPlugin(), // Optimise plugin load order
+    new webpack.DefinePlugin({ // Set production mode
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.DedupePlugin() // Remove duplicate bundle bits
+  ],
+    devtool: 'eval',
     resolve: {
     // you can now require('file') instead of require('file.js')
     extensions: ['', '.js', '.json']
