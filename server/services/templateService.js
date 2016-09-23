@@ -11,8 +11,10 @@ const templateModel = require("../models/templateModel");
 
 class TemplateService {
 
-   static save (templateModel, callback)  {
-        const documentId = data.document_id ? data.document_id : uuid.v4();
+   static createTemplate (templateModel, callback)  {
+        const documentId = templateModel.name ? templateModel.name : uuid.v4();
+        console.log('New documentId:', documentId);
+        console.log('New templateModel',templateModel);
         templates.upsert(documentId, templateModel, function(error, result) {
             if(error) {
                 callback(error, null);
@@ -42,6 +44,17 @@ class TemplateService {
                 return callback(error, null);
             }
             callback(null, result);
+        });
+    }
+
+    static updateTemplate (name, payload, callback) {
+        console.log('In update template');
+        templates.replace(name, payload, function(error, result) {
+            if(error) {
+                callback(error, null);
+                return;
+            }
+            callback(null, {message: "success", data: result});
         });
     }
 };

@@ -7,9 +7,20 @@ import { Link } from 'react-router'
 
 let dataObject = new DataFetchInterface();
 
-let masterData = {};
+window.masterData = {};
 const masterHandler = (keyName, value) => {
-  masterData[keyName] = value;
+  try {
+    var fullStr = 'window.';
+    if(keyName.indexOf('masterData')<0) {
+      fullStr+='masterData.';
+    } 
+    fullStr += keyName + "='"+ value + "'";
+    console.log('building eval');
+   
+   eval(fullStr);
+   } catch (exc) {
+    console.log('Couldnt run eval');
+   }
 }
 
 class BoundValueObject extends React.Component {
@@ -28,7 +39,11 @@ class BoundValueObject extends React.Component {
       console.log('Handling click');
     }
     handleChange (event) {
-      this.setState({value: event.target.value});
+      var newVal = event.target.value;
+      console.log('Got an on change event against my full key of:', this.props.fullKey)
+      console.log('New value:' + newVal)
+      masterHandler(this.props.fullKey, newVal);
+      this.setState({value: newVal});
     }
     render () {
     if (!this.state) {
@@ -37,11 +52,14 @@ class BoundValueObject extends React.Component {
       );
     } else {
       var that = this;
+      var fullKey = this.props.fullKey;
+      var keyName = this.props.keyName;
+      var value = this.props.value;
       console.log('Rendering value object:', that.props.keyName, that.props.fullKey, that.state.value, that.props.data);
       masterHandler(that.props.fullKey, that.state.value);
       return (
         <div>
-          <input value={that.state.value} id={that.props.keyName} onClick={ function() { that.handleClick() } } onChange={ that.handleChange } /> 
+          <input value={this.state.value} id={keyName} onChange={ that.handleChange } /> 
         </div>
       )
     }
@@ -57,15 +75,26 @@ class ThresholdObject extends React.Component {
     console.log('Clicked remove me with ', this.props);
   }
   render() {
+    console.log('Entering thresholdObject!!!!!!!!!!!!');
     var contents = [];
     var data = this.props.data;
-    var key = Object.keys(data)[0];
-    var fullKey = 'data[' + key + '].key';
-    console.log('IN TO Key:', data[key]['key']);
-    console.log('IN TO Value:', data[key]['name']);
-
-    contents.push(<div className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fullKey} value={data[key]['key']} /></div>);
-    contents.push(<div className="col-md-3">Name:<BoundValueObject keyName={data['name']} fullKey={data[key]['name']} value={data[key]['name']} /></div>);
+    var key = this.props.keyName;
+    var fullKey;
+    var iterator = this.props.iterator;
+    var usableData = {};
+    if (_.isArray(data[key])) {
+      fullKey = 'masterData.' + key + '[' + iterator + ']'; 
+      usableData = data[key][iterator]
+    } else {
+      fullKey = 'masterData.' + key;
+      usableData = data[key];
+    }
+    var keyVal = usableData['key'];
+    var nameVal = usableData['name'];
+    var fkKey = fullKey + '.key';
+    var fkName = fullKey + '.name';
+    contents.push(<div className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} /></div>);
+    contents.push(<div className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={nameVal} /></div>);
     return (
       <div>{contents}</div>
     )
@@ -139,7 +168,7 @@ class RenderArray extends React.Component {
   }
   render () {
     var key = this.props.keyName;
-    var data = this.props.templateData[key];
+    var data = this.props.templateData;
     /*
      var contents = '<div class="row" style="border-top: 1px solid #FFF; background: #262626;">' + 
                   '<div class="col-md-3">' + key + '</div><div class="col-md-6">';
@@ -164,8 +193,12 @@ class RenderArray extends React.Component {
       )
       */
       var contents = [];
-      for (var innerKey in data) {
-        contents.push(<div className="row"><ThresholdObject keyName={innerKey} data={data} /></div>)
+      console.log('Key Im analyzing:', key)
+      console.log('data in render array:', data, typeof(data));
+      console.log('Data at key:', data[key]);
+      console.log('Data length;', data[key].length)
+      for (var i = 0; i < data[key].length; i++) {
+        contents.push(<div className="row"><ThresholdObject keyName={key} iterator={i} data={data} /></div>)
       }
       var styleObj = {
         background: '#262626',
@@ -276,7 +309,8 @@ export default class EditTemplate extends React.Component {
     console.log('Form submit called');
     console.log('My template data:', this.state.templateData);
     console.log('my template name:', this.state.templateData.name)
-    console.log('My master data:', masterData);
+    console.log('My master data:', window.masterData);
+    dataObject.updateTemplate(window.masterData);
   }
   render () {
   console.log('ReactEditTemplate: Edit template props are:', this.props);
