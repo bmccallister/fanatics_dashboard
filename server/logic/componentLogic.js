@@ -11,7 +11,14 @@ class ComponentLogic
     }  
     static getComponentsByContext(context, callback)
     {
-        componentService.getComponentsByContext(context, callback);
+        if (context == '' || context=='all')
+        {
+            componentService.getAll(callback);
+        }
+        else
+        {
+            componentService.getComponentsByContext(context, callback);
+        }
     }
     static getComponentsByTemplate (template, callback)
     {

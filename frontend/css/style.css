@@ -11,6 +11,11 @@ body
 {
     background: transparent !important;
 }
+select,
+select option
+{
+  color: #000 !important;
+}
 
 #logo-container img
 {

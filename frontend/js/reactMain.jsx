@@ -22,20 +22,41 @@ dataObject.initializeLists([]);
 class ComponentContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {templateList: [], componentList: [], };
+    this.state = {templateList: [], componentList: [], selectedContextValue: '' };
+    this.updateComponents = this.updateComponents.bind(this);
+    this.updateComponentData = this.updateComponentData.bind(this);
   }
-  componentDidMount() {
-
+  componentDidMount() 
+  {
+    this.contextChangeHandler = this.contextChangeHandler.bind(this);
     this._isMounted = false;
+    this.updateComponents('all');
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+  contextChangeHandler(e) {
+    this.updateComponentData(e.target.value);
+  }
+  updateComponentData(context)
+  {
     var self = this;
+    socket.emit("componentsByContext", context);
+    self.setState({ selectedContextValue : context });
+  }
+  updateComponents(context)
+  {
+    var self = this;
+    console.log(context);
 
+    self.setState({ selectedContextValue : context });
     self.setState({currentTime: new Date().getTime()});
     
     socket.emit("templates", '');
     socket.on("templates", function(templateData)
     {
-      socket.emit("components", '');
-      socket.on("components", function(componentData)
+      socket.emit("componentsByContext", '');
+      socket.on("componentsByContext", function(componentData)
       {
         self.setState({templateList:templateData, componentList:componentData});
 
@@ -67,11 +88,6 @@ class ComponentContainer extends React.Component {
         }
       }); 
     });  
-
-
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
   }
   render () {
     //console.log('From the component container, component list is:', this.state.componentList);
@@ -79,7 +95,8 @@ class ComponentContainer extends React.Component {
     <div className="container">
     <NavMenu />
       <div className="row">
-        <div className="hidden-xs hidden-sm col-md-12 text-right">
+        <div className="hidden-xs hidden-sm col-md-6 text-left"><ContextSelectHandler changeHandler={this.contextChangeHandler} childSelectValue={this.state.selectedContextValue}/></div>
+        <div className="hidden-xs hidden-sm col-md-6 text-right">
           <div className="infoContainer">
             <ComponentCount templateList={this.state.templateList} />
             <CurrentTime currentTime={this.state.currentTime} />
@@ -92,6 +109,7 @@ class ComponentContainer extends React.Component {
     </div>
     )
   }
+
   onUpdate (val) {
     this.setState({
       data:val
@@ -306,5 +324,60 @@ class Repeater extends React.Component {
       );
     }
 }
+
+class ContextSelectHandler extends React.Component {
+    constructor(props) 
+    {
+      super(props);      
+    }
+    render() {
+        return (
+            <div>
+                <ContextSelect 
+                    url="/api/contexts/"
+                    value={this.props.childSelectValue}
+                    onChange={this.props.changeHandler} 
+                />
+            </div>
+        )
+    }
+}
+
+class ContextSelect extends React.Component{
+    constructor(props) 
+    {
+      super(props);
+      this.state = { options: [] };
+    }
+    componentDidMount() {
+        var self = this;
+        // get your data
+        console.log(self.props.url);
+        var optionList = [];
+        getApi(self.props.url, '').then(function(data) {
+            // assuming data is an array of {name: "foo", value: "bar"}
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+
+                var option = data[i];
+
+                optionList.push(
+                    <option key={i} value={option.context}>{option.context} ({option.count})</option>
+                );
+            }
+            console.log(optionList);
+
+            self.setState({ options: optionList });
+
+            self.forceUpdate();
+        });
+    }
+    render() {
+        return (
+            <select value={this.props.value} onChange={this.props.onChange}><option value="all">All Contexts</option>{this.state.options}</select>
+        )
+    }
+}
+
 
 export default ComponentContainer;
