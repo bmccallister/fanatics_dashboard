@@ -17,6 +17,7 @@ const initialize = (router) => {
                 res.status(400).send(error);
                 return;
             }
+            console.log(results);
             res.json(results);
         });
     });

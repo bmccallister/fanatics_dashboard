@@ -48,7 +48,7 @@ const initialize = (io) => {
         socket.on('componentsByContext', function(context) 
         {
             console.log('Socket Server: Retrieving components for context: ' + context + '.');
-            componentLogic.getComponentByContext(context, (error, results) => {                
+            componentLogic.getComponentsByContext(context, (error, results) => {                
                 console.log('Socket Server: Retrieved components for context: ' + context + '.');
                 io.emit('componentsByContext', results);
             });
