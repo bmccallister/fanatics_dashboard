@@ -3,10 +3,11 @@ var _ = require('lodash');
 var config = require("../../server/config");
 var couchbase = require('couchbase');
 var db = (new couchbase.Cluster(config.couchbase.server));
-var tableauData = db.openBucket('tableau_data');
-var tableauComponents = db.openBucket('tableau_components');
+var components = db.openBucket('components');
 var N1qlQuery = couchbase.N1qlQuery;
- 
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:8888');
+
 function TableauDataModel() { };
 
 TableauDataModel.save = function(data, callback) {
@@ -45,13 +46,9 @@ var buildSet = function(qObject) {
     return query;
 }
 
-var buildWhere = function(qObject) {
+var buildWhere = function(key, value) {
     var query = ' WHERE ';
-    console.log('Building where');
-    var key = Object.keys(qObject)[0];
-    console.log('My key:', key);
-    var val = qObject[key];
-    query += key + '=\"' + val + '\";';
+    query += key + '=\"' + value + '\";';
     return query;
 }
 
@@ -62,19 +59,23 @@ TableauDataModel.updatePayloadData = function(jsonObj, callback) {
             var newObj = JSON.parse(jsonObj);
             jsonObj = newObj;
         }
-        var statement = "update " + config.couchbase.data;
+        var statement = "update " + config.couchbase.components;
+        var componentKey = Object.keys(jsonObj)[0];
+        var componentID = jsonObj[componentKey];
         statement += buildSet(jsonObj);
-        statement += buildWhere(jsonObj);
+        statement += buildWhere(componentKey, componentID);
         console.log('n1ql statement:' + statement)
         var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
-        tableauData.query(query, function(error, result) {
+        components.query(query, function(error, result) {
             if(error) {
                 return callback(error, null);
             }
             callback(null, result);
+            socket.emit("componentByID", componentID);
         });
         return;
     } catch (exc) {
+        console.log(exc);
         console.log('Error converting value to json:', jsonObj);
         callback(null, undefined);
     }
@@ -83,7 +84,7 @@ TableauDataModel.updatePayloadData = function(jsonObj, callback) {
 
 TableauDataModel.getComponentData = function(component, callback) {
     var statement = "SELECT * " +
-                "FROM `" + config.couchbase.data + "` where component=$1";
+                "FROM `" + config.couchbase.components + "` where component=$1";
     var query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
     console.log('Query:', query, component);
     db.query(query, [component], function(error, result) {
