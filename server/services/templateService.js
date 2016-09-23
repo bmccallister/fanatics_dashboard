@@ -47,6 +47,18 @@ class TemplateService {
         });
     }
 
+        static deleteTemplateByName (name, callback) {
+        const statement = "DELETE FROM `" + config.couchbase.templates + "` where name=$1";
+        const query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
+        
+        templates.query(query, [name], function(error, result) {
+            if(error) {
+                return callback(error, null);
+            }
+            callback(null, result);
+        });
+    }
+
     static updateTemplate (name, payload, callback) {
         console.log('In update template');
         templates.replace(name, payload, function(error, result) {

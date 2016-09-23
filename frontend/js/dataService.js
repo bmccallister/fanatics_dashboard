@@ -85,7 +85,28 @@ export const putApi = (route, param, data) => {
           dataType: 'json',
           cache: false,
           success: function(data) {
-            alert('Template updated');
+            resolve(data);
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error('Caught error on url:', url, err, xhr, status)
+            reject(err);
+          }.bind(this)
+        });
+    });
+}
+
+export const deleteApi = (route, data) => {
+    return new Promise(function(resolve, reject) 
+    {
+        var url = route;
+        console.log('Full delete url request:', url);
+        $.ajax({
+          type: 'DELETE',
+          url: url,
+          data: data,
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
             resolve(data);
           }.bind(this),
           error: function(xhr, status, err) {
@@ -108,7 +129,6 @@ export const postApi = (route, data) => {
           dataType: 'json',
           cache: false,
           success: function(data) {
-            alert('Template saved');
             resolve(data);
           }.bind(this),
           error: function(xhr, status, err) {
@@ -144,7 +164,15 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         const url = '/api/templates/copy/' + name;
         postApi(url, templateData).then(function(data) {
-          that.setTemplateList(data);
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    deleteTemplate(name) {
+      return new Promise(function( resolve, reject) {
+        console.log('Calling delete template:' + name);
+        const url = '/api/templates/' + name;
+        deleteApi(url).then(function(data) {
           resolve(data);
         }).catch(reject);
       })
@@ -155,7 +183,6 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         const url = '/api/templates/' + name;
         postApi(url, templateData).then(function(data) {
-          that.setTemplateList(data);
           resolve(data);
         }).catch(reject);
       })
@@ -167,25 +194,23 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         const url = '/api/templates';
         putApi(url, templateData.name, templateData).then(function(data) {
-          that.setTemplateList(data);
           resolve(data);
         }).catch(reject);
       })
     }
-    fetchTemplateList (name) {
+    fetchTemplateList (name, override) {
       var that = this;
       name = name || '';
       return new Promise(function( resolve, reject) {
         if (!that.templateList) {
           that.templateList = [];
         }
-        if (that.templateList.length>0) {
+        if (that.templateList.length>0 && !override) {
           resolve(that.getTemplateList());
           return;
         }
         const url = '/api/templates';
         getApi(url, name).then(function(data) {
-          
           that.setTemplateList(data);
           resolve(data);
         }).catch(reject);

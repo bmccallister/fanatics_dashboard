@@ -95,6 +95,18 @@ class ThresholdObject extends React.Component {
     var fkName = fullKey + '.name';
     contents.push(<div className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} /></div>);
     contents.push(<div className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={nameVal} /></div>);
+
+    console.log('checking threshold against:', data['threshold']);
+    if (_.isArray(data['threshold'])) {
+      if (data['threshold'].length<1) {
+        data['threshold'] = [0,0,0,0];
+      }
+      var indicatorArray = ['Green','Yellow','Red','Black'];
+      for (var i = 0 ; i < data['threshold'].length ; i++) {
+        //contents+='<div class="col-md-3">' + indicatorArray[i] + '<br><input id="threshold_' + data['key'] +'_' + i + '" value="' + data['threshold'][i] + '" onChange={ function() {} }></div>';
+      }
+    }
+
     return (
       <div>{contents}</div>
     )
@@ -169,47 +181,22 @@ class RenderArray extends React.Component {
   render () {
     var key = this.props.keyName;
     var data = this.props.templateData;
-    /*
-     var contents = '<div class="row" style="border-top: 1px solid #FFF; background: #262626;">' + 
-                  '<div class="col-md-3">' + key + '</div><div class="col-md-6">';
+    var contents = [];
 
-      for (var innerKey in data) {
-        if (_.isObject(data[innerKey])) {
-          contents += renderObject(data[innerKey]);
-        } // end if
-        else {
-            contents +='<div class="row"><div class="col-md-3">' +
-              'arr<input id="td_' + key + '_' + innerKey + '" value="' + data[innerKey] + '" onClick=>';
-            contents +='</div>';
-            contents += ReactDOMServer.renderToString(<AddArrayItem />);
-            contents += ReactDOMServer.renderToString(<RemoveArrayItem />);
-            contents +='</div>';
-        } // end else
-      } // end for
-      contents += '</div></div>';
-      console.log('Rendering...');
-      return (
-        <div dangerouslySetInnerHTML={{__html: contents}}></div> 
-      )
-      */
-      var contents = [];
-      console.log('Key Im analyzing:', key)
-      console.log('data in render array:', data, typeof(data));
-      console.log('Data at key:', data[key]);
-      console.log('Data length;', data[key].length)
-      for (var i = 0; i < data[key].length; i++) {
-        contents.push(<div className="row"><ThresholdObject keyName={key} iterator={i} data={data} /></div>)
-      }
-      var styleObj = {
-        background: '#262626',
-        border: '1px solid #FFF'
-      }
-      return (
-        <div className="row" style={styleObj}>
-          {contents}
-        </div>
-      )
+    contents.push(<div className="contentRow">Array:{key}</div>)
+    for (var i = 0; i < data[key].length; i++) {
+      contents.push(<div className="contentRow"><ThresholdObject keyName={key} iterator={i} data={data} /></div>)
     }
+    var styleObj = {
+      background: '#262626',
+      border: '1px solid #FFF'
+    }
+    return (
+      <div className="row" style={styleObj}>
+        {contents}
+      </div>
+    )
+  }
 } // end renderArray
 
 class StandardField extends React.Component {
@@ -310,7 +297,9 @@ export default class EditTemplate extends React.Component {
     console.log('My template data:', this.state.templateData);
     console.log('my template name:', this.state.templateData.name)
     console.log('My master data:', window.masterData);
-    dataObject.updateTemplate(window.masterData);
+    dataObject.updateTemplate(window.masterData).then(function() {
+      alert('Changes saved!');
+    })
   }
   render () {
   console.log('ReactEditTemplate: Edit template props are:', this.props);
@@ -338,8 +327,8 @@ export default class EditTemplate extends React.Component {
         <h2> Editing Component: {templateName} </h2>
         <EditRows templateData={templateData} />
       </div>
-      <div className="row">
-        <button onClick={function() { that.submitForm(); } }>Submit</button>
+      <div className="contentRow">
+        <button className="saveButton" onClick={function() { that.submitForm(); } }>Save Changes</button>
       </div>
       <div className="row">
         Copyright 1998
