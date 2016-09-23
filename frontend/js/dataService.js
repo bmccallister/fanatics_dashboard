@@ -32,9 +32,7 @@ export const isRemoved = (obj, field) => {
         });              
     });
 }*/
-
 export const getApi = (route, param, optionalThis, optionalParam) => {
-    
     return new Promise(function(resolve, reject) 
     {
         param = param || '';
@@ -67,6 +65,60 @@ export const getApi = (route, param, optionalThis, optionalParam) => {
     });
 }
 
+export const putApi = (route, param, data) => {
+    return new Promise(function(resolve, reject) 
+    {
+        param = param || '';
+        var url = route;
+              
+        if (param.length>1) {
+            if (!checkTrailingSlash(route)) {
+                url+='/';
+            }
+            url += param;
+        }
+        console.log('Full url request:', url);
+        $.ajax({
+          type: 'PUT',
+          url: url,
+          data: data,
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            alert('Template updated');
+            resolve(data);
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error('Caught error on url:', url, err, xhr, status)
+            reject(err);
+          }.bind(this)
+        });
+    });
+}
+
+export const postApi = (route, data) => {
+    return new Promise(function(resolve, reject) 
+    {
+        var url = route;
+        console.log('Full url request:', url);
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: data,
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            alert('Template saved');
+            resolve(data);
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error('Caught error on url:', url, err, xhr, status)
+            reject(err);
+          }.bind(this)
+        });
+    });
+}
+
 export class DataFetchInterface {
     constructor() {
       
@@ -87,6 +139,38 @@ export class DataFetchInterface {
     initializeLists () {
       this.templateList = [];
       this.componentList = [];
+    }
+    copyTemplate(templateData) {
+      return new Promise(function( resolve, reject) {
+        const url = '/api/templates/copy/' + name;
+        postApi(url, templateData).then(function(data) {
+          that.setTemplateList(data);
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    createTemplate(templateData) {
+      var milliseconds = (new Date).getTime();
+      name = templateData.name || 'Template_' + milliseconds;
+      return new Promise(function( resolve, reject) {
+        const url = '/api/templates/' + name;
+        postApi(url, templateData).then(function(data) {
+          that.setTemplateList(data);
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    updateTemplate(templateData) {
+      var that = this;
+      var milliseconds = (new Date).getTime();
+      name = templateData.name || 'Template_' + milliseconds;
+      return new Promise(function( resolve, reject) {
+        const url = '/api/templates';
+        putApi(url, templateData.name, templateData).then(function(data) {
+          that.setTemplateList(data);
+          resolve(data);
+        }).catch(reject);
+      })
     }
     fetchTemplateList (name) {
       var that = this;

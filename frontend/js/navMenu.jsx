@@ -6,7 +6,6 @@ import { Link , Router } from 'react-router'
 export class NavMenu extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {componentList: []};
   }
   render () {
   console.log('In render');
@@ -25,7 +24,6 @@ export class NavMenu extends React.Component {
 export class NavComponentMenu extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {componentList: []};
   }
   render () {
   console.log('In render');
