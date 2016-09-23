@@ -36,6 +36,19 @@ const initialize = (router) => {
         });
     });
 
+    //Get template by name
+    router.delete('/templates/:template', (req,res,next) => { 
+        console.log('Using delete template by name')
+        templateLogic.deleteTemplateByName(req.params.template, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
     //Post template by name
     router.post('/templates/copy/:template', (req,res,next) => { 
         console.log('Calling copy template')

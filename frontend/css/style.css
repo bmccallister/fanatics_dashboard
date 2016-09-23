@@ -75,6 +75,21 @@ body
 
   cursor: pointer;
 }
+.saveButton {
+  text-align: center;
+  margin: 0 15%;
+  width: 100px;
+  color: #000;
+  border: 1px solid #262626;
+}
+.contentRow {
+  border-top: 1px solid #FFF; 
+  background: #262626;
+  width: 100%;
+  padding: 10px 5% 20px;
+  clear:both;
+  margin: 0;
+}
 .contentFields .roundedBox {
   display: block;
   float: left;
@@ -93,7 +108,7 @@ body
     width: 75%;
 }
 .contentFields .row .col-md-3 {
-  padding: 5px 0;
+  padding: 10px;
 }
 .componentList {
   width: 100%;
@@ -112,7 +127,13 @@ body
 .indicator {
     background-color: #404040;
 }
-
+.optionItem {
+  padding: 0 5px;
+  margin: 0 5px;
+  min-width: 50px;
+  border: 1px solid #FFF;
+  text-align: center;
+}
 .indicator.green {
     background-color: #23AF3B;
 }

@@ -15,6 +15,11 @@ class TemplateLogic {
         templateService.getTemplateByName(name, callback);
     }
 
+    static deleteTemplateByName(name, callback)
+    {
+        templateService.deleteTemplateByName(name, callback);
+    }
+
     static createTemplate(payload, callback) {
     	templateService.createTemplate(payload, callback)
     }
