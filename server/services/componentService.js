@@ -9,7 +9,7 @@ const N1qlQuery = require('couchbase').N1qlQuery;
 
 class componentService {
    static createComponent (componentModel, callback)  {
-        const documentId = componentModel.document_id ? componentModel.document_id : uuid.v4();
+        const documentId = componentModel.id ? componentModel.id : uuid.v4();
         console.log('Creating component from id:', documentId, componentModel);
         components.upsert(documentId, componentModel, function(error, result) 
         {
@@ -35,7 +35,8 @@ class componentService {
     }
 
     static updateComponent (id, payload, callback) {
-        console.log('In update component');
+        console.log('In update component with id:'+ id);
+        console.log('my payload:', payload);
         components.replace(id, payload, function(error, result) {
             if(error) {
                 console.log('got error:', error, id, payload);

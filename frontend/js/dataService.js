@@ -200,7 +200,7 @@ export class DataFetchInterface {
       var milliseconds = (new Date).getTime();
       name = templateData.name || 'Template_' + milliseconds;
       return new Promise(function( resolve, reject) {
-        const url = '/api/templates/' + name;
+        const url = '/api/templates/';
         postApi(url, templateData).then(function(data) {
           resolve(data);
         }).catch(reject);
