@@ -1,6 +1,6 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-import { NavMenu, NavComponentMenu} from './navMenu.jsx';
+import { NavMenu } from './navMenu.jsx';
 import { DataFetchInterface } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
@@ -315,7 +315,6 @@ export default class EditTemplate extends React.Component {
     return (
     <div className="container">
     <NavMenu />
-    <NavComponentMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
           <p className="infoContainer">
