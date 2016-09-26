@@ -276,7 +276,6 @@ export default class EditTemplate extends React.Component {
       var templateName = that.props.location.query.templateName;
       if (!templateName) {
         window.masterData = sampleTemplate;
-        
         that.setState ({templateData:sampleTemplate});
         this.setState({templateName:sampleTemplate.name});
         console.log('No id specified, creating new');
@@ -305,9 +304,16 @@ export default class EditTemplate extends React.Component {
     console.log('My template data:', this.state.templateData);
     console.log('my template name:', this.state.templateData.name)
     console.log('My master data:', window.masterData);
-    dataObject.updateTemplate(window.masterData).then(function() {
-      alert('Changes saved!');
-    })
+    if (window.masterData.newTemplate) {
+      delete window.masterData.newTemplate;
+      dataObject.createTemplate(window.masterData).then(function() {
+        alert('Changes saved!');
+      })
+    } else {
+      dataObject.updateTemplate(window.masterData).then(function() {
+        alert('Changes saved!');
+      })
+    }
   }
   render () {
   console.log('ReactEditTemplate: Edit template props are:', this.props);
@@ -350,6 +356,7 @@ var sampleTemplate = {
   "title":"Sample sampleTemplate",
   "description": "Your Sample Template",
   "acceptPush": false,
+  "newTemplate": true,
   "dataDefinition": [
     {
       "name": "Some Field",

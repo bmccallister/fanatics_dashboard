@@ -85,13 +85,12 @@ class GenericObject extends React.Component {
 
     for (var innerKey in data[key]) {
       var usableData = data[key][innerKey];
-      var fkKey = 'masterData.' + key + '.' + innerKey + '.key';
-      var fkName = 'masterData.' + key + '.' + innerKey + '.value';
+      var fkName = 'masterData.' + key + '.' + innerKey
       console.log('Usable data:', usableData)
       contents.push(
         <div className="row contentRow">
-          <div className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={innerKey} /></div>
-          <div className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={usableData} /></div>
+          <div className="col-md-3">{innerKey}</div>
+          <div className="col-md-3">Value:{fkName}<BoundValueObject keyName={name} fullKey={fkName} value={usableData} /></div>
         </div>);
     }
 
