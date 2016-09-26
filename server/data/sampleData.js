@@ -1,3 +1,55 @@
+module.exports.sampleTemplate = {
+  "name": "sample_template",
+  "title":"Sample sampleTemplate",
+  "description": "Your Sample Template",
+  "acceptPush": false,
+  "dataDefinition": [
+    {
+      "name": "Some Field",
+      "threshold": [],
+      "key": "someField"
+    },
+    {
+      "name": "Another Field",
+      "threshold": [
+        "0",
+        "3",
+        "5"
+      ],
+      "key": "anotherField"
+    },
+    {
+      "name": "Third Field",
+      "threshold": [],
+      "key": "thirdField"
+    },
+    {
+      "name": "Fourth Field",
+      "threshold": [
+        "0%",
+        "5%",
+        "100%"
+      ],
+      "key": "fourthField"
+    },
+    {
+      "name": "Fifth Field",
+      "threshold": [
+        "10%",
+        "7%",
+        "3%",
+        "0%"
+      ],
+      "key": "fifthField"
+    }
+  ],
+  "thresholdFields": [
+    "fourthField",
+    "fifthField"
+  ],
+  "module": "sample_template"
+}
+
 module.exports.templates = [
 {
   "name": "tcs_load",

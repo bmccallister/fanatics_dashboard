@@ -132,6 +132,31 @@ const initialize = (router) => {
             res.json(results);
         });
     });
+    router.get('/components/:component', (req,res,next) => { 
+        console.log('Using get components by name')
+        componentLogic.getComponentByID(req.params.component, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    router.put('/components/:component', (req,res,next) => { 
+        console.log('Calling update component with component:' + req.params.component)
+         componentLogic.updateComponent(req.params.component, req.body, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
 
     router.delete('/components/:component', (req,res,next) => { 
         console.log('Using delete components by name')

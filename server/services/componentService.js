@@ -33,6 +33,18 @@ class componentService {
             callback(null, result);
         });
     }
+
+    static updateComponent (id, payload, callback) {
+        console.log('In update component');
+        components.replace(id, payload, function(error, result) {
+            if(error) {
+                console.log('got error:', error, id, payload);
+                callback(error, null);
+                return;
+            }
+            callback(null, {message: "success", data: result});
+        });
+    }
     static getComponentByID (id, callback) {
         //console.log('API Server: Retrieving all components by id.');
         let statement = "SELECT * FROM `" + config.couchbase.components + "` where id=$1";

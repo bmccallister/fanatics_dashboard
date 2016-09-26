@@ -27,9 +27,9 @@ export class NavMenu extends React.Component {
                 <Link to="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span className="caret"></span></Link>
                   <ul className="dropdown-menu">
                       <li><Link to="/listTemplates">List Templates</Link></li>
-                      <li><Link to="/createTemplate">Create Template</Link></li>
+                      <li><Link to="/editTemplate">Create Template</Link></li>
                       <li><Link to="/listComponents">List Components</Link></li> 
-                      <li><Link to="/createComponent">Create Component</Link></li>
+                      <li><Link to="/editComponent">Create Component</Link></li>
                   </ul>
                 </li>
               </ul>
