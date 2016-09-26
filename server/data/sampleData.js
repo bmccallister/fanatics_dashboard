@@ -96,7 +96,60 @@ module.exports.templates = [
     "conversionRate"
   ],
   "module": "tcs_orders"
+},
+{
+  "name": "return_dispositions",
+  "title":"Return Dispositions",
+  "description": "Most used return dispositions.",
+  "acceptPush": false,
+  "dataDefinition": [
+    {
+      "name": "Wrong Size",
+      "threshold": [
+        "0",
+        "20",
+        "50"
+      ],
+      "key": "wrong_size"
+    },
+    {
+      "name": "Incorrect product shipped",
+      "threshold": [
+        "0",
+        "20",
+        "50"
+      ],
+      "key": "incorrect_product_shipped"
+    },
+    {
+      "name": "Product damaged",
+      "threshold": [
+        "0",
+        "20",
+        "50"
+      ],
+      "key": "product_damaged"
+    },
+    {
+      "name": "Incorrect customization",
+      "threshold": [
+        "0",
+        "20",
+        "50"
+      ],
+      "key": "incorrect_customization"
+    },
+    
+  ],
+  "thresholdFields": [
+    "wrong_size",
+    "incorrect_product_shipped",
+	"product_damaged",
+	"incorrect_customization"
+  ],
+  "module": "return_dispositions"
 }
+
 ];
 
 module.exports.components = [
@@ -128,7 +181,7 @@ module.exports.components = [
   "lastModified": "1470669993"
 },
 {
-  "id": "tcs_orders_1",
+  "id": "tcs_orders_2",
   "template": "tcs_orders",
   "context":"development",
   "payload": {
@@ -139,6 +192,44 @@ module.exports.components = [
     "conversionRate": "6"
   },
   "type": "bargraph",
+  "lastModified": "1470669993"
+},
+{
+  "id": "return_dispositions_1",
+  "template": "return_dispositions",
+  "context":"development",
+  "payload": {
+    "wrong_size": "21",
+    "incorrect_product_shipped": "45",
+    "product_damaged": "3",
+    "incorrect_customization": "2"
+  },
+  "type": "pie",
+  "lastModified": "1470669993"
+},
+{
+  "id": "return_dispositions_2",
+  "template": "return_dispositions",
+  "context":"test",
+  "payload": {
+    "wrong_size": "7",
+    "incorrect_product_shipped": "16",
+    "product_damaged": "1",
+    "incorrect_customization": "0"
+  },
+  "type": "pie",
+  "lastModified": "1470669993"
+},
+{
+  "id": "return_dispositions_3",
+  "template": "return_dispositions",
+  "context":"development",
+  "payload": {
+    "wrong_size": "21",
+    "incorrect_product_shipped": "45",
+    "product_damaged": "3",
+    "incorrect_customization": "2"
+  },
   "lastModified": "1470669993"
 }
 ]

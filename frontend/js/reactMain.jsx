@@ -50,8 +50,11 @@ class ComponentContainer extends React.Component {
     console.log(context);
 
     self.setState({ selectedContextValue : context });
-    self.setState({currentTime: new Date().getTime()});
     
+    var currentTime = new Date();
+    var options = { hour12: true };
+    self.setState({currentTime: currentTime.toLocaleString('en-US', options)});
+
     socket.emit("templates", '');
     socket.on("templates", function(templateData)
     {
@@ -83,6 +86,10 @@ class ComponentContainer extends React.Component {
                     }
 
                     self.setState ({componentData:data});
+
+                    var currentTime = new Date();
+                    var options = { hour12: true };
+                    self.setState({currentTime: currentTime.toLocaleString('en-US', options)});
                 });  
             }
         }
@@ -134,7 +141,7 @@ class CurrentTime extends React.Component {
   render() {
     return (
         <div>
-          Current Date/Time: {this.props.currentTime}
+          Last Updated: {this.props.currentTime}
         </div>
     );
   }
@@ -285,13 +292,13 @@ class RepeaterRow extends React.Component {
     } else {
       return (
        <Draggable>
-          <div className="col-md-4">
+          <div className="col-md-4 component-min-height">
             <div className="panel panel-default">
-              <div className="description">{component.title}</div>
-              <div className="panel-heading">{component.description}</div>
+              <div className="panel-heading"><h4>{component.title}</h4> {component.description}</div>
               <table className="table table-striped table-bordered">
                 <FieldRepeater valuesData={component.values} />
               </table>
+              <div className="panel-footer">{component.context}</div>
             </div>
           </div>
         </Draggable>
