@@ -26,11 +26,13 @@ class Pie extends React.Component {
 
     return (
       <Draggable>
-        <div className="col-md-4">
+        <div className="col-md-4 component-min-height">
           <div className="panel panel-default">
-            <div className="description">{myProps.id}</div>
-            <div className="panel-heading">TCS Load Monitoring</div>
-            <ChartistGraph data={data} options={options} type={'Pie'} />
+            <div className="panel-heading"><h4>{myProps.title}</h4>Pie Chart: {myProps.description}</div>
+            <div className="panel-body">
+              <ChartistGraph data={data} options={options} type={'Pie'} />
+            </div>
+            <div className="panel-footer"><span>{myProps.context}</span></div>
           </div>
         </div>
       </Draggable>
