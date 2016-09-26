@@ -24,6 +24,10 @@ class ComponentLogic
     {
         componentService.getComponentsByTemplate(template, callback);
     }
+    static deleteComponentByName(name, callback)
+    {
+        componentService.deleteComponentByName(name, callback);
+    }
     static getComponentsByTemplateContext (template, context, callback)
     {
         componentService.getComponentsByTemplateContext(template, context, callback);    
@@ -35,6 +39,12 @@ class ComponentLogic
     static getDistinctContexts(callback)
     {
         componentService.getDistinctContexts(callback);
+    }
+    static copyComponent(payload, callback) {
+        console.log('Inside logic copyComponent');
+        payload.id = payload.id + '_Copy';
+        console.log('New payload name:', payload.id);
+        componentService.createComponent(payload, callback)
     }
 }
 

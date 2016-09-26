@@ -28,8 +28,8 @@ export class NavMenu extends React.Component {
                   <ul className="dropdown-menu">
                       <li><Link to="/listTemplates">List Templates</Link></li>
                       <li><Link to="/createTemplate">Create Template</Link></li>
-                      <li><Link to="/createComponent">Create Component from Template</Link></li>
                       <li><Link to="/listComponents">List Components</Link></li> 
+                      <li><Link to="/createComponent">Create Component</Link></li>
                   </ul>
                 </li>
               </ul>
