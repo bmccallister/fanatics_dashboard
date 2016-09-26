@@ -1,6 +1,6 @@
 const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
-import { NavMenu, NavComponentMenu} from './navMenu.jsx';
+import { NavMenu } from './navMenu.jsx';
 import { Link } from 'react-router'
 
 import { DataFetchInterface } from './dataService';
@@ -96,7 +96,6 @@ export default class ListTemplates extends React.Component {
     return (
     <div className="container">
     <NavMenu />
-    <NavComponentMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-12 text-right">
           <p className="infoContainer">

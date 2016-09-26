@@ -161,7 +161,7 @@ class ComponentOptions extends React.Component {
 }
 
 const establishIndicator = (val, arrayArg) => {
-  const thresholdArray = arrayArg;
+  const thresholdArray = arrayArg || [];
   let indicator ='';
   
   const determineAsc = (val, thresholdArray) => {
@@ -179,6 +179,9 @@ const establishIndicator = (val, arrayArg) => {
   }
   
   const determineDesc = (val, thresholdArray) => {
+    if (!thresholdArray) {
+      return '';
+    }
     let indicator = '';
     if (val<=cleanNum(thresholdArray[0])&& val>cleanNum(thresholdArray[1])) {
       indicator += ' green';
@@ -193,6 +196,7 @@ const establishIndicator = (val, arrayArg) => {
     return indicator;
   }
   //console.log('Checking thresholdarray');
+
   if (thresholdArray.length < 1) {
     indicator+=' green';
   } else {
