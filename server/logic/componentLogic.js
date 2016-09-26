@@ -20,6 +20,9 @@ class ComponentLogic
             componentService.getComponentsByContext(context, callback);
         }
     }
+    static updateComponent(name, payload, callback) {
+        componentService.updateComponent(name, payload, callback)
+    }
     static getComponentsByTemplate (template, callback)
     {
         componentService.getComponentsByTemplate(template, callback);

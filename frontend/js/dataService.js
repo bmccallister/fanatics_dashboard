@@ -259,4 +259,13 @@ export class DataFetchInterface {
         }).catch(reject);
       })
     }
+    updateComponent(componentData) {
+      var that = this;
+      return new Promise(function( resolve, reject) {
+        const url = '/api/components';
+        putApi(url, componentData.id, componentData).then(function(data) {
+          resolve(data);
+        }).catch(reject);
+      })
+    }
 }

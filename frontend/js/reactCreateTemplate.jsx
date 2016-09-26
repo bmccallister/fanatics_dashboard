@@ -3,6 +3,7 @@ const _ = require('lodash');
 import { NavMenu } from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';
 
+
 export default class CreateTemplate extends React.Component {
   constructor(props) {
     super(props);
@@ -36,4 +37,3 @@ export default class CreateTemplate extends React.Component {
     })
   }
 }
-
