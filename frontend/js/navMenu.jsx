@@ -23,7 +23,6 @@ export class NavMenu extends React.Component {
             <div className="collapse navbar-collapse" id="mainNavigation">
               <ul className="nav navbar-nav">
                 <li className="active"><Link to="/">Dashboard</Link></li>
-                <li><Link to="/editTemplate">Edit</Link></li>
                 <li className="dropdown">
                 <Link to="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span className="caret"></span></Link>
                   <ul className="dropdown-menu">
@@ -40,7 +39,7 @@ export class NavMenu extends React.Component {
   	)}
 };
 
-
+/*
 export class NavComponentMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -58,4 +57,4 @@ export class NavComponentMenu extends React.Component {
        </div>
     )
   }
-};
+};*/
