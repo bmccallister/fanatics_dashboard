@@ -40,7 +40,7 @@ export class NavMenu extends React.Component {
   	)}
 };
 
-/*
+
 export class NavComponentMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -58,4 +58,4 @@ export class NavComponentMenu extends React.Component {
        </div>
     )
   }
-};*/
+};

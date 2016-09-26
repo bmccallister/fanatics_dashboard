@@ -9,6 +9,7 @@ window.componentList = [];
 
 class ListComponentTemplates extends React.Component {
   constructor(props) {
+  console.log('Entering list component templates');
     super(props);
   } 
   componentDidMount() {
@@ -62,6 +63,7 @@ class ListComponentTemplates extends React.Component {
 export default class ListTemplates extends React.Component {
   constructor(props) {
     super(props);
+    console.log('in list templates constructor');
     this.state = {componentList: []};
   }
   componentDidMount() {
@@ -89,6 +91,7 @@ export default class ListTemplates extends React.Component {
   var that = this;
   console.log('In render with state cl:', this.state.componentList);
   console.log("as i render component list my pcb is :", this.externalUpdate)
+  console.log('Generating render')
   var componentList = this.state.componentList;
     return (
     <div className="container">
