@@ -37,7 +37,7 @@ const initialize = (router) => {
         });
     });
 
-    //Get template by name
+    //Delete template by name
     router.delete('/templates/:template', (req,res,next) => { 
         console.log('Using delete template by name')
         templateLogic.deleteTemplateByName(req.params.template, function(error, results) 
@@ -120,6 +120,31 @@ const initialize = (router) => {
         });
     });
 
+    router.post('/components/copy/:template', (req,res,next) => { 
+        console.log('Calling copy template with reqbody:', req.body)
+        componentLogic.copyComponent(req.body, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
+    router.delete('/components/:component', (req,res,next) => { 
+        console.log('Using delete components by name')
+        componentLogic.deleteComponentByName(req.params.component, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
     //Get a specific component by its component ID
     router.get('/component/:ID', (req,res,next) => {
                         

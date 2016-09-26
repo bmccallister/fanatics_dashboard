@@ -163,7 +163,17 @@ export class DataFetchInterface {
     copyTemplate(templateData) {
       return new Promise(function( resolve, reject) {
         const url = '/api/templates/copy/' + name;
+        console.log('Ulr for copy template:', url);
         postApi(url, templateData).then(function(data) {
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    copyComponent(componentData) {
+      return new Promise(function( resolve, reject) {
+        console.log('Doing copy component')
+        const url = '/api/components/copy/' + name;
+        postApi(url, componentData).then(function(data) {
           resolve(data);
         }).catch(reject);
       })
@@ -172,6 +182,15 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         console.log('Calling delete template:' + name);
         const url = '/api/templates/' + name;
+        deleteApi(url).then(function(data) {
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    deleteComponent(id) {
+      return new Promise(function( resolve, reject) {
+        console.log('Calling delete component:' + id);
+        const url = '/api/components/' + id;
         deleteApi(url).then(function(data) {
           resolve(data);
         }).catch(reject);

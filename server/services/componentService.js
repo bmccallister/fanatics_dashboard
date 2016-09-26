@@ -8,9 +8,9 @@ const components = db.openBucket('components');
 const N1qlQuery = require('couchbase').N1qlQuery;
 
 class componentService {
-
-   static save (componentModel, callback)  {
-        const documentId = data.document_id ? data.document_id : uuid.v4();
+   static createComponent (componentModel, callback)  {
+        const documentId = componentModel.document_id ? componentModel.document_id : uuid.v4();
+        console.log('Creating component from id:', documentId, componentModel);
         components.upsert(documentId, componentModel, function(error, result) 
         {
             if (error) 
@@ -22,7 +22,17 @@ class componentService {
             callback(null, {message: "success", data: result});
         });
     }
-
+    static deleteComponentByName (name, callback) {
+        const statement = "DELETE FROM `" + config.couchbase.components + "` where id=$1";
+        const query = N1qlQuery.fromString(statement).consistency(N1qlQuery.Consistency.REQUEST_PLUS);
+        console.log('Running query:', query, name);
+        components.query(query, [name], function(error, result) {
+            if(error) {
+                return callback(error, null);
+            }
+            callback(null, result);
+        });
+    }
     static getComponentByID (id, callback) {
         //console.log('API Server: Retrieving all components by id.');
         let statement = "SELECT * FROM `" + config.couchbase.components + "` where id=$1";
