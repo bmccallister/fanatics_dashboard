@@ -1,4 +1,3 @@
-const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 import { DataFetchInterface, getApi } from './dataService';
 import { Link , Router } from 'react-router'
@@ -8,8 +7,9 @@ export class NavMenu extends React.Component {
     super(props);
   }
   render () {
+    var emptyProps = {};
   	return (
-       <nav className="navbar navbar-default">
+      <nav className="navbar navbar-default">
           <div className="container-fluid">
             
             <div className="navbar-header">
@@ -26,10 +26,10 @@ export class NavMenu extends React.Component {
                 <li className="dropdown">
                 <Link to="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span className="caret"></span></Link>
                   <ul className="dropdown-menu">
-                      <li><Link to="/listTemplates">List Templates</Link></li>
-                      <li><Link to="/editTemplate">Create Template</Link></li>
-                      <li><Link to="/listComponents">List Components</Link></li> 
-                      <li><Link to="/editComponent">Create Component</Link></li>
+                      <li key="1"><Link to="/listTemplates" id="test" defaultProps={emptyProps}>List Templates</Link></li>
+                      <li key="2"><Link to="/editTemplate" defaultProps={emptyProps}>Create Template</Link></li>
+                      <li key="3"><Link to="/listComponents" defaultProps={emptyProps}> List Components</Link></li> 
+                      <li key="4"><Link to="/editComponent" defaultProps={emptyProps}>Create Component</Link></li>
                   </ul>
                 </li>
               </ul>
@@ -38,23 +38,3 @@ export class NavMenu extends React.Component {
         </nav>
   	)}
 };
-
-/*
-export class NavComponentMenu extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render () {
-  console.log('In render');
-    return (
-      <div className="navComponentMenu">
-       <ul>
-       <li><Link to="/listTemplates">List Templates</Link></li>
-       <li><Link to="/createTemplate">Create Template</Link></li>
-       <li><Link to="/createComponent">Create Component from Template</Link></li>
-       <li><Link to="/listComponents">List Components</Link></li>       
-       </ul>
-       </div>
-    )
-  }
-};*/

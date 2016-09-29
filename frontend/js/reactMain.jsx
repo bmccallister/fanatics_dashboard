@@ -1,4 +1,4 @@
-import { NavMenu } from './navMenu.jsx';
+//import { NavMenu } from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
@@ -8,7 +8,6 @@ import { DataFetchInterface, getApi } from './dataService';
 var socket = io.connect('http://localhost:8888');
 let dataObject = new DataFetchInterface();
 
-const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 const cleanNum = (numStr) => {
   const num = (numStr).replace('%', '');
@@ -96,6 +95,7 @@ class ComponentContainer extends React.Component {
       }); 
     });  
   }
+  /*
   render () {
     //console.log('From the component container, component list is:', this.state.componentList);
     return (
@@ -116,7 +116,10 @@ class ComponentContainer extends React.Component {
     </div>
     )
   }
-
+*/
+  render () {
+    <div>Hello</div>
+  }
   onUpdate (val) {
     this.setState({
       data:val
