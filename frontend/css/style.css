@@ -16,6 +16,10 @@ select option
 {
   color: #000 !important;
 }
+.floatedInput {
+  float: left;
+  display: inline;
+}
 
 #logo-container img
 {

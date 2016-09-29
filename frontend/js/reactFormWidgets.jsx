@@ -51,9 +51,7 @@ export class BoundValueObject extends React.Component {
       console.log('Rendering value object:', that.props.keyName, that.props.fullKey, that.state.value, that.props.data);
       masterHandler(that.props.fullKey, that.state.value);
       return (
-        <div>
-          <input value={this.state.value} id={keyName} onChange={ that.handleChange } /> 
-        </div>
+          <input value={this.state.value} id={keyName} onChange={ that.handleChange } className="floatedInput"/> 
       )
     }
   }
@@ -138,8 +136,14 @@ export class RemoveArrayItem extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
-    console.log('Clicked remove me with ', this.props);
+    var keyName = this.props.keyName;
+    var i = this.props.iterator-1;
+    var fullStr = keyName + '.splice(' + i + ',1)';
+    console.log('Full str:', fullStr)
+    eval(fullStr);
+    window.masterUpdate();
   }
+
   render() {
     console.log('in render for RemoveArrayItem');
     return (
@@ -154,7 +158,12 @@ export class AddArrayItem extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
-    console.log('Clicked add me with ', this.props);
+    var keyName = this.props.keyName;
+    var i = this.props.iterator;
+    var fullStr = keyName + '.splice(' + i + ',0,\'NEW\')';
+    console.log('Full str:', fullStr)
+    eval(fullStr);
+    window.masterUpdate();
   }
   render() {
     var self = this;
@@ -246,7 +255,7 @@ export class RenderStandardArray extends React.Component {
       console.log('RenderStandardArray Iterator value Value:', value[i]);
       console.log('RenderStandardArray Full key:', fullKey);
 
-      contents.push(<div className="col-md-6 contentRow"><BoundValueObject keyName={key} fullKey={tmpfullKey} value={value} data={this.props.rowData} iterator={i}/></div>);
+      contents.push(<div className="col-md-6 contentRow"><BoundValueObject keyName={key} fullKey={tmpfullKey} value={value} data={this.props.rowData} iterator={i}/><RemoveArrayItem keyName={fullKey} iterator={i} /><AddArrayItem keyName={fullKey} iterator={i} /></div>);
     }
 
     var styleObj = {
