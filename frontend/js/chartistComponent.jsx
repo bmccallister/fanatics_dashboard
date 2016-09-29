@@ -1,4 +1,3 @@
-const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 import Pie from './pieComponent.jsx';
 

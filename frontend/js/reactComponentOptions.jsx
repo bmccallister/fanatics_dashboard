@@ -1,4 +1,3 @@
-const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 import { NavMenu } from './navMenu.jsx';
 import { DataFetchInterface, getApi } from './dataService';

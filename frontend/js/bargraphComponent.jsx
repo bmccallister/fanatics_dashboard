@@ -1,4 +1,3 @@
-const createFragment = require('react-addons-create-fragment');
 const _ = require('lodash');
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 var ChartistGraph = require('react-chartist')
