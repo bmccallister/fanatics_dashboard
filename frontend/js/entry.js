@@ -37,7 +37,6 @@ render((
 	<div>
 		<Router history={browserHistory}>
 			<Route path="/" component={HomePage} />
-			<Route path="/create" component={ComponentOptions} />
 			<Route path="/chartistComponent" component={ChartistComponent} />
 			<Route path="/listTemplates" component={ListTemplates} />
 			<Route path="/editComponent" component={CreateComponent} />			

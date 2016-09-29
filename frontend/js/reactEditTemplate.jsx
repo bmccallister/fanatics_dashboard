@@ -14,13 +14,15 @@ let dataObject = new DataFetchInterface();
 export default class EditTemplate extends React.Component {
   constructor(props) {
     console.log('in the constructor for edit template');
-
     super(props);
   }
   onUpdate (val) {
     console.log('OnUpdate called with val:', val);
   }
   componentDidMount() {
+
+    this.externalUpdate = this.externalUpdate.bind(this);
+    window.masterUpdate = this.externalUpdate;
     var that= this;
     try {
       var templateName = that.props.location.query.templateName;
@@ -48,6 +50,10 @@ export default class EditTemplate extends React.Component {
     catch (exc) {
       console.log('Caught exception:', exc);
     }
+  }
+  externalUpdate() {
+    console.log('External force render called');
+    this.setState({templateData:window.masterData});
   }
   submitForm () {
     console.log('Form submit called');

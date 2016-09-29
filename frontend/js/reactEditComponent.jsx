@@ -34,6 +34,8 @@ export default class EditTemplate extends React.Component {
   }
   componentDidMount() {
     var that= this;
+    
+    this.externalUpdate = this.externalUpdate.bind(this);  
     try {
       var componentId = that.props.location.query.componentId;
       console.log('My componentId:', componentId)
@@ -64,7 +66,15 @@ export default class EditTemplate extends React.Component {
       alert('Changes saved!');
     })
   }
+  externalUpdate() {
+    console.log('External force render called');
+    var that = this;
+    this.setState({componentData:window.masterData});
+  }
   render () {
+  console.log('setting window master update');
+  window.masterUpdate = this.externalUpdate;
+
   console.log('ReactEditTemplate: Edit template props are:', this.props);
   console.log('Looking at state data:', this.state);
   var componentId = '?';
