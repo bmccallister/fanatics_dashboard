@@ -1,6 +1,7 @@
 //import { NavMenu } from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
+import GaugeComponent from './gaugeComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { DataFetchInterface, getApi } from './dataService';
@@ -99,7 +100,7 @@ class ComponentContainer extends React.Component {
   render () {
     //console.log('From the component container, component list is:', this.state.componentList);
     return (
-    <div className="container">
+    <div className="container-fluid">
     <NavMenu />
       <div className="row">
         <div className="hidden-xs hidden-sm col-md-6 text-left"><ContextSelectHandler changeHandler={this.contextChangeHandler} childSelectValue={this.state.selectedContextValue}/></div>
@@ -283,22 +284,38 @@ class RepeaterRow extends React.Component {
     var templates = this.props.templateList;
     var component = this.props.componentList[this.props.index].components;
     mergeComponentData(templates, component);
-
-    if (component.type=='pie') {
+    console.log(component);
+    if (component.type=='pie') 
+    {
       return (
         <Pie data={component}/>
       )
-    } else if (component.type=='bargraph') {
+    } 
+    else if (component.type=='bargraph') 
+    {
       return (
         <BarGraph data={component}/>
       )
-    } else {
+    } 
+    else if (component.type=='gauge') 
+    {
+      return (
+        <GaugeComponent data={component}/>
+      )
+    }
+    else
+    {
+      if (!component.size)
+      {
+        component.size = 3;
+      }
+      var componentStyleClasses = "col-md-" + component.size + "";
       return (
        <Draggable>
-          <div className="col-md-4 component-min-height">
+          <div className={componentStyleClasses}>
             <div className="panel panel-default">
               <div className="panel-heading"><h4>{component.title}</h4> {component.description}</div>
-              <table className="table table-striped table-bordered">
+              <table className="table table-striped table-bordered component-min-height">
                 <FieldRepeater valuesData={component.values} />
               </table>
               <div className="panel-footer">{component.context}</div>

@@ -45,13 +45,17 @@ class BarGraph extends React.Component {
     };
 
     var type = 'Bar'
-
+    if (!myProps.size)
+    {
+      myProps.size = 3;
+    }
+    var componentStyleClasses = "col-md-" + myProps.size + "";
     return (
       <Draggable>
-        <div className="col-md-4 component-min-height">
+        <div className={componentStyleClasses}>
           <div className="panel panel-default">
             <div className="panel-heading"><h4>{myProps.title}</h4> Bar Graph: {myProps.description}</div>
-            <div className="panel-body">
+            <div className="panel-body component-min-height">
               <ChartistGraph data={data} options={options} type={type} />
             </div>
             <div className="panel-footer">{myProps.context}</div>
