@@ -95,7 +95,7 @@ export default class EditTemplate extends React.Component {
       </div>
       <div className="row">
         <h2> Editing Component: {templateName} </h2>
-        <EditRows rowData={templateData} />
+        <EditRows rowData={templateData} editableObjects="false" />
       </div>
       <div className="contentRow">
         <button className="saveButton" onClick={function() { that.submitForm(); } }>Save Changes</button>

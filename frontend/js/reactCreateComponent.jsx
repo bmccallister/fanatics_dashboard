@@ -10,7 +10,7 @@ export default class CreateComponent extends React.Component {
   componentDidMount() {
     var that= this;
     that.setState({currentTime: new Date().getTime()});
-    console.log('Component creation page mounted');
+    console.log('Component creation page mounted ffs');
   }
   render () {
     return (

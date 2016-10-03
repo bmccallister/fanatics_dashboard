@@ -3,6 +3,7 @@ import { NavMenu } from './navMenu.jsx';
 import { DataFetchInterface } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
+import { BoundValueObject, ThresholdObject, GenericObject, RemoveArrayItem, AddArrayItem, RenderArray, StandardField, EditRows} from './reactFormWidgets.jsx';
 
 let dataObject = new DataFetchInterface();
 
@@ -34,7 +35,7 @@ export default class EditTemplate extends React.Component {
   }
   componentDidMount() {
     var that= this;
-    
+    console.log('Component Mounted');
     this.externalUpdate = this.externalUpdate.bind(this);  
     try {
       var componentId = that.props.location.query.componentId;
@@ -46,8 +47,14 @@ export default class EditTemplate extends React.Component {
     dataObject.fetchComponentList(componentId).then(function(data) {
         console.log('Got back data and setting componentData:', data);
         that.setState ({componentData:data[0].components});
-        console.log('Assigned masterdata');
-        masterData = data[0].components;
+        var templateName = that.state.componentData.template;
+        window.masterData = that.state.componentData;
+        console.log('Getting template data');
+        dataObject.fetchTemplateList(templateName).then(function(data) {
+          console.log('Got back data and setting templateData:', data);
+          that.setState ({templateData:data[0].templates});
+          window.templateData = that.state.templateData;
+        });
       }).catch(function(err) {
         console.log('Error:', err);
         throw(err);
@@ -59,8 +66,7 @@ export default class EditTemplate extends React.Component {
   }
   submitForm () {
     console.log('Form submit called');
-    console.log('My template data:', this.state.componentData);
-    console.log('my template name:', this.state.componentData.id)
+    console.log('My component data:', this.state.componentData);
     console.log('My master data:', window.masterData);
     dataObject.updateComponent(window.masterData).then(function() {
       alert('Changes saved!');
@@ -78,13 +84,17 @@ export default class EditTemplate extends React.Component {
   console.log('ReactEditTemplate: Edit template props are:', this.props);
   console.log('Looking at state data:', this.state);
   var componentId = '?';
+  var payloadOptions = [];
   var componentData = '?';
   if (this.state) {
-    componentId = this.state.componentId;
-    componentData = this.state.componentData;
-    console.log('')
+    if (this.state.templateData) {
+      componentId = this.state.componentId;
+      componentData = this.state.componentData;
+      payloadOptions = this.state.templateData.dataDefinition;
+    }
   }
     var that = this;
+    console.log('setting editableObjects to true');
     return (
     <div className="container">
     <NavMenu />
@@ -97,7 +107,7 @@ export default class EditTemplate extends React.Component {
       </div>
       <div className="row">
         <h2> Editing Component: {componentId} </h2>
-        <EditRows componentData={componentData} />
+        <EditRows rowData={componentData} editableObjects="true" payloadOptions={payloadOptions} externalUpdate={this.externalUpdate}/>
       </div>
       <div className="contentRow">
         <button className="saveButton" onClick={function() { that.submitForm(); } }>Save Changes</button>
