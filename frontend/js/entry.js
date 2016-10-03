@@ -18,7 +18,6 @@ import ListComponents from './reactListComponents.jsx';
 import CreateComponent from './reactCreateComponent.jsx';
 import EditTemplate from './reactEditTemplate.jsx';
 import EditComponent from './reactEditComponent.jsx';
-import Component from './reactCreateComponent.jsx';
 
 
 
@@ -37,9 +36,10 @@ render((
 	<div>
 		<Router history={browserHistory}>
 			<Route path="/" component={HomePage} />
+			<Route path="/create" component={ComponentOptions} />
 			<Route path="/chartistComponent" component={ChartistComponent} />
 			<Route path="/listTemplates" component={ListTemplates} />
-			<Route path="/editComponent" component={CreateComponent} />			
+			<Route path="/createComponent" component={CreateComponent} />			
 			<Route path="/listComponents" component={ListComponents} />		
 			<Route path="/editComponent" component={EditComponent} />
 			<Route path="/editTemplate" component={EditTemplate} />	

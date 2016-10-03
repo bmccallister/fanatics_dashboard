@@ -1,4 +1,4 @@
-//import { NavMenu } from './navMenu.jsx';
+import { NavMenu } from './navMenu.jsx';
 import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import GaugeComponent from './gaugeComponent.jsx';
@@ -96,9 +96,9 @@ class ComponentContainer extends React.Component {
       }); 
     });  
   }
-  /*
+  
   render () {
-    //console.log('From the component container, component list is:', this.state.componentList);
+    console.log('From the component container, component list is:', this.state.componentList);
     return (
     <div className="container-fluid">
     <NavMenu />
@@ -116,10 +116,6 @@ class ComponentContainer extends React.Component {
       </div>
     </div>
     )
-  }
-*/
-  render () {
-    <div>Hello</div>
   }
   onUpdate (val) {
     this.setState({
@@ -332,6 +328,8 @@ class Repeater extends React.Component {
       super(props);
     }
     componentDidMount () {
+
+      console.log('Repeater select mounted');
       this.enabledTimer = false;
     }
     componentWillUnmount () {
@@ -381,6 +379,7 @@ class ContextSelect extends React.Component{
       this.state = { options: [] };
     }
     componentDidMount() {
+      console.log('Context select mounted');
         var self = this;
         // get your data
         console.log(self.props.url);

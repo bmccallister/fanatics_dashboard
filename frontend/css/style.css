@@ -20,8 +20,56 @@ select option
   float: left;
   display: inline;
 }
+.payloadRow {
+  padding: -10px;
+  background: #505151;
+}
+.payloadOption {
+  float: left;
+  min-width: 100px;
+  padding: 5px 2px;
+  color: #000;
+  margin: 0 5px;
+  background: #CCC;
+  border: 1px solid #000;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
+.payloadOption .addOption,.removeOption {
+  float: left;
+  padding: 0 5px;
+  margin: 0 6px 0 0;
+  display: inline;
+  text-align: center;
+  font-size: 14pt;
+  border: 1px solid #262626;
+  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+.row.marginRow {
+  padding: 20px;
+  min-height: 60px;
+}
+.payloadOption .removeOption span {
+  font-size: 12pt;  
+  display: block;
+  position: relative;
+  margin: -3px 0px 0px -1px;
+}
 
+.payloadOption .addOption span {
+  position: relative;
+  display: block;
+  margin: -6px 0px 0px -1px;
+}
+.removeOption .addOption span {
+  position: relative;
+  display: block;
+  margin: -6px 0px 0px -1px;
+}
 
 #logo-container img
 {
@@ -122,8 +170,14 @@ select option
   height: 20px;
   border: 1px solid #FFF;
 }
+.payloadContainer {
+  background: #505151;
+  margin: 0 -15px;
+  padding: 15px 15px 45px 15px;
+}
 .contentFields .row {
-  padding: 5px 0;
+  padding: 5px 25px;
+  clear: both;
 }
 .contentFields .input {
     width: 75%;
