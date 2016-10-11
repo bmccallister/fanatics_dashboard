@@ -6,6 +6,8 @@ var checkTrailingSlash = function(str) {
   console.log('Checking trailing slash against:',char)
   return  char == '/';
 }
+
+
 export const isRemoved = (obj, field) => {
   var ret = false;
   /*var payload = obj.payload;
@@ -264,6 +266,15 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         const url = '/api/components';
         putApi(url, componentData.id, componentData).then(function(data) {
+          resolve(data);
+        }).catch(reject);
+      })
+    }
+    createComponent(componentData) {
+      var that = this;
+      return new Promise(function( resolve, reject) {
+        const url = '/api/components';
+        postApi(url, componentData).then(function(data) {
           resolve(data);
         }).catch(reject);
       })
