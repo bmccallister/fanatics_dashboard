@@ -1,5 +1,15 @@
 window.masterData = {};
 
+// Not best way to do it..
+// Figure better auto config way to determine types of selectable keys
+export const isSelectable = (key) => {
+  console.log('Checking selectable keys against:', key);
+  if (key == 'template' || key == 'type') {
+    return window.selectableKeys[key];
+  }
+  return undefined;
+}
+
 const masterHandler = (keyName, value) => {
   try {
     var fullStr = 'window.';
@@ -128,6 +138,39 @@ export class GenericObject extends React.Component {
     return (
       <div>{contents}</div>
     )
+  }
+}
+export class SelectBox extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(e) {
+    console.log('I am handling the on change:', e.target.value);
+    console.log('This key:', this.props.fullKey);
+    masterHandler(this.props.fullKey, e.target.value)
+  }
+  render() {
+    var thisName = this.props.keyName;
+    var thisValue = this.props.value;
+    var thisKeys= this.props.selectableKeys;
+
+    console.log('in render for RemoveArrayItem:', thisKeys);
+    var options = [];
+
+    _.each(thisKeys, function(row) {
+      if (row == thisValue) {
+        options.push(<option key={row} value={row} selected>{row}</option>);
+      } else {
+        options.push(<option key={row} value={row}>{row}</option>);
+      }
+    });
+    console.log('options:', options);
+    return (
+      <select name={thisName} id={thisName} onChange={this.handleChange}>
+      {options}
+      </select>
+    );
   }
 }
 export class RemoveArrayItem extends React.Component {
@@ -371,14 +414,27 @@ export class StandardField extends React.Component {
     var divStyle = {
       background: '#333'
     };
-    return (
-      <div export className="row" style={divStyle}>
-        <div export className="col-md-3">Key: {key}</div>
-        <div export className="col-md-3">
-          <BoundValueObject keyName={key} fullKey={fullKey} value={value} data={this.props.rowData} />
+    console.log('Getting selectable keys');
+    var selectableKeys = isSelectable(key);
+    if (selectableKeys) {
+      return (
+        <div export className="row" style={divStyle}>
+          <div export className="col-md-3">Key: {key}</div>
+          <div export className="col-md-3">
+            <SelectBox keyName={key} fullKey={fullKey} value={value} selectableKeys={selectableKeys} data={this.props.rowData} />
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div export className="row" style={divStyle}>
+          <div export className="col-md-3">Key: {key}</div>
+          <div export className="col-md-3">
+            <BoundValueObject keyName={key} fullKey={fullKey} value={value} data={this.props.rowData} />
+          </div>
+        </div>
+      )
+    }
   }
 }
 //<input id={idKey} value={value} onChange={function() { console.log("Data changed"); } }/>

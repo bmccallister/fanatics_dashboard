@@ -29,7 +29,7 @@ export class NavMenu extends React.Component {
                       <li key="1"><Link to="/listTemplates" id="test" defaultProps={emptyProps}>List Templates</Link></li>
                       <li key="2"><Link to="/editTemplate" defaultProps={emptyProps}>Create Template</Link></li>
                       <li key="3"><Link to="/listComponents" defaultProps={emptyProps}> List Components</Link></li> 
-                      <li key="4"><Link to="/editComponent" defaultProps={emptyProps}>Create Component</Link></li>
+                      <li key="4"><Link to="/createComponent" defaultProps={emptyProps}>Create Component</Link></li>
                   </ul>
                 </li>
               </ul>

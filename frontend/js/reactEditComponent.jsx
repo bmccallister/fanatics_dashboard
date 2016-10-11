@@ -1,6 +1,6 @@
 const _ = require('lodash');
 import { NavMenu } from './navMenu.jsx';
-import { DataFetchInterface } from './dataService';
+import { DataFetchInterface, isSelectable } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
 import { BoundValueObject, ThresholdObject, GenericObject, RemoveArrayItem, AddArrayItem, RenderArray, StandardField, EditRows} from './reactFormWidgets.jsx';
@@ -43,22 +43,33 @@ export default class EditTemplate extends React.Component {
     	const url = '/api/tableau_components/';
       console.log('Using componentId:', componentId);
       this.setState({componentId:componentId});
-    
-    dataObject.fetchComponentList(componentId).then(function(data) {
-        console.log('Got back data and setting componentData:', data);
-        that.setState ({componentData:data[0].components});
-        var templateName = that.state.componentData.template;
-        window.masterData = that.state.componentData;
-        console.log('Getting template data');
-        dataObject.fetchTemplateList(templateName).then(function(data) {
-          console.log('Got back data and setting templateData:', data);
-          that.setState ({templateData:data[0].templates});
-          window.templateData = that.state.templateData;
+      window.selectableKeys = {};
+      window.selectableKeys['type'] = ['bargraph', 'pie', 'gauge', 'normal'];
+      console.log('Preloading selectable keys');
+      dataObject.fetchTemplateList().then(function(data) {
+      console.log('Setting selectable keys')
+
+        window.selectableKeys['template'] = [];
+        _.each(data, function(row) {
+          window.selectableKeys['template'].push(row.templates.name);
+        })
+        dataObject.fetchComponentList(componentId).then(function(data) {
+          console.log('Got back data and setting componentData:', data);
+          that.setState ({componentData:data[0].components});
+          var templateName = that.state.componentData.template;
+          window.masterData = that.state.componentData;
+          console.log('Getting template data');
+          dataObject.fetchTemplateList(templateName).then(function(data) {
+            console.log('Got back data and setting templateData:', data);
+            that.setState ({templateData:data[0].templates});
+            window.templateData = that.state.templateData;
+          });
+        }).catch(function(err) {
+          console.log('Error:', err);
+          throw(err);
         });
-      }).catch(function(err) {
-        console.log('Error:', err);
-        throw(err);
       });
+    
     }
     catch (exc) {
       console.log('Caught exception:', exc);
