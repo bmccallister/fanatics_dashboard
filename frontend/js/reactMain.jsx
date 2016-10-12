@@ -306,6 +306,11 @@ class RepeaterRow extends React.Component {
         component.size = 3;
       }
       var componentStyleClasses = "col-md-" + component.size + "";
+
+      var currentDateTime = new Date();
+      var options = { hour12: true };
+      var formattedDateTime = currentDateTime.toLocaleString('en-US', options);
+
       return (
        <Draggable>
           <div className={componentStyleClasses}>
@@ -314,7 +319,13 @@ class RepeaterRow extends React.Component {
               <table className="table table-striped table-bordered component-min-height">
                 <FieldRepeater valuesData={component.values} />
               </table>
-              <div className="panel-footer">{component.context}</div>
+              <div className="panel-footer">
+              <div className="row">
+                <div className="col-md-6">{component.context}</div>
+                  
+                <div className="col-md-6 text-right"><small>Updated: {formattedDateTime}</small></div>
+              </div>
+              </div>
             </div>
           </div>
         </Draggable>
