@@ -23,6 +23,9 @@ class ComponentLogic
     static updateComponent(name, payload, callback) {
         componentService.updateComponent(name, payload, callback)
     }
+    static createComponent(payload, callback) {
+        componentService.createComponent(payload, callback)
+    }
     static getComponentsByTemplate (template, callback)
     {
         componentService.getComponentsByTemplate(template, callback);
