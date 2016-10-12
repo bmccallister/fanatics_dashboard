@@ -22,10 +22,17 @@ export default class CreateComponent extends React.Component {
     dataObject.fetchTemplateList().then(function(data) {    
       that.setState({templateDataList: data});
       console.log('Setting selectable keys')
+      var templates = [];
       window.selectableKeys['template'] = [];
       _.each(data, function(row) {
+
+        templates.push(row.templates);
         window.selectableKeys['template'].push(row.templates.name);
       })
+      window.templateOptions = templates;
+
+      that.setState({templateOptions:templates });
+      //window.templateData = _.find(window.templateOptions, {name:templateName});
       that.setState({templateList:window.selectableKeys['template']});
     });
   }
@@ -75,7 +82,6 @@ export default class CreateComponent extends React.Component {
         _.each(that.state.templateList, function(row) {
             options.push(<option key={row} value={row}>{row}</option>);
         });
-        console.log('options:', options);
         var thisName = 'template';
         contents.push(<div>Please choose a template: <select name={thisName} id={thisName} onChange={this.handleChange}>{options}</select></div>)
         } else {
@@ -85,11 +91,13 @@ export default class CreateComponent extends React.Component {
       var payloadOptions = [];
       if (this.state.templateData) {
         var componentData = this.state.componentData;
-        payloadOptions = this.state.templateData.dataDefinition;
+          if (this.state.templateOptions) {
+            payloadOptions = _.find(window.templateOptions, {name:componentData.template}).dataDefinition;
+          } 
 
         var that = this;
-        console.log('setting editableObjects to true');
         contents.push(<EditRows rowData={componentData} editableObjects="true" payloadOptions={payloadOptions} externalUpdate={this.externalUpdate}/>)
+
         contents.push(<div className="contentRow">
           <button className="saveButton" onClick={function() { that.submitForm(); } }>Save Changes</button>
         </div>)

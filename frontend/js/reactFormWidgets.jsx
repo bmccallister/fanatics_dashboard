@@ -10,7 +10,7 @@ export const isSelectable = (key) => {
   return undefined;
 }
 
-const masterHandler = (keyName, value) => {
+const masterHandler = (keyName, value, finalCb) => {
   try {
     var fullStr = 'window.';
     if(keyName.indexOf('masterData')<0) {
@@ -19,8 +19,11 @@ const masterHandler = (keyName, value) => {
     fullStr += keyName + "='"+ value + "'";
     console.log('building eval');
    
-   eval(fullStr);
-   } catch (exc) {
+     eval(fullStr);
+     if (finalCb) {
+      finalCb();
+     }
+    } catch (exc) {
     console.log('Couldnt run eval');
    }
 }
@@ -44,7 +47,7 @@ export class BoundValueObject extends React.Component {
       var newVal = event.target.value;
       console.log('Got an on change event against my full key of:', this.props.fullKey)
       console.log('New value:' + newVal)
-      masterHandler(this.props.fullKey, newVal);
+      masterHandler(this.props.fullKey, this.props.externalUpdate);
       this.setState({value: newVal});
     }
     render () {
@@ -57,9 +60,9 @@ export class BoundValueObject extends React.Component {
       var fullKey = this.props.fullKey;
       var keyName = this.props.keyName;
       var value = this.props.value;
-      masterHandler(that.props.fullKey, that.state.value);
+      //masterHandler(that.props.fullKey, that.state.value);
       return (
-          <input value={this.state.value} id={keyName} onChange={ that.handleChange } className="floatedInput"/> 
+          <input value={that.state.value} id={keyName} onChange={ that.handleChange } className="floatedInput"/>
       )
     }
   }
@@ -92,8 +95,8 @@ export class ThresholdObject extends React.Component {
     var nameVal = usableData['name'];
     var fkKey = fullKey + '.key';
     var fkName = fullKey + '.name';
-    contents.push(<div export className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} /></div>);
-    contents.push(<div export className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={nameVal} /></div>);
+    contents.push(<div export className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} externalUpdate={this.props.externalUpdate}/></div>);
+    contents.push(<div export className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={nameVal}  externalUpdate={this.props.externalUpdate}/></div>);
 
     console.log('checking threshold against:', data['threshold']);
     if (_.isArray(data['threshold'])) {
@@ -148,7 +151,7 @@ export class SelectBox extends React.Component {
   handleChange(e) {
     console.log('I am handling the on change:', e.target.value);
     console.log('This key:', this.props.fullKey);
-    masterHandler(this.props.fullKey, e.target.value)
+    masterHandler(this.props.fullKey, e.target.value, this.props.externalUpdate);
   }
   render() {
     var thisName = this.props.keyName;
@@ -319,7 +322,7 @@ export class RenderObjectArray extends React.Component {
             contents.push(
             <div export className="row contentRow">
               <div export className="col-md-3">Usable key - {usableData.key}</div>
-              <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableValue} /></div>
+              <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableValue}  externalUpdate={this.props.externalUpdate}/></div>
             </div>);                    
             if (usableData.threshold) {
               console.log('object has threshold');
@@ -336,13 +339,13 @@ export class RenderObjectArray extends React.Component {
             contents.push(
               <div export className="row contentRow">
                 <div export className="col-md-3">{innerKey}</div>
-                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData} /></div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData}  externalUpdate={this.props.externalUpdate}/></div>
               </div>);
           } else {
             contents.push(
               <div export className="row contentRow">
-                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={innerKey} /></div>
-                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData} /></div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={innerKey}  externalUpdate={this.props.externalUpdate}/></div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData}  externalUpdate={this.props.externalUpdate}/></div>
               </div>);
             }
         }
@@ -404,6 +407,7 @@ export class StandardField extends React.Component {
     var that = this;
   }
   render () {
+    var externalUpdate = this.props.externalUpdate; 
     var key = this.props.keyName;
     var fullKey = key;
     var idKey = 'id_' + key;
@@ -421,7 +425,7 @@ export class StandardField extends React.Component {
         <div export className="row" style={divStyle}>
           <div export className="col-md-3">Key: {key}</div>
           <div export className="col-md-3">
-            <SelectBox keyName={key} fullKey={fullKey} value={value} selectableKeys={selectableKeys} data={this.props.rowData} />
+            <SelectBox keyName={key} fullKey={fullKey} value={value} selectableKeys={selectableKeys} data={this.props.rowData} externalUpdate={externalUpdate}/>
           </div>
         </div>
       )
@@ -460,23 +464,25 @@ export class EditRows extends React.Component {
     console.log('EDIT Rows Identifier:', name);
     var contents = [];
     var rowData = this.props.rowData;
-
+    if (rowData == '?') {
+      return (<div>Please wait</div>);
+    }
     for (var key in rowData) {
       if (_.isArray(rowData[key])) {  
         if (_.isObject(rowData[key][0])) {
-          contents.push(<RenderObjectArray keyName={key} rowData={rowData} />);
+          contents.push(<RenderObjectArray keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
         } else {
-          contents.push(<RenderStandardArray fullKey={''} keyName={key} rowData={rowData} />);
+          contents.push(<RenderStandardArray fullKey={''} keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
         }
       }
       else if (_.isObject(rowData[key])) {
         if (key == 'payload') {
           contents.push(<div className="payloadRow"><RenderPayload keyName={key} rowData={rowData} editableObjects={that.props.editableObjects} payloadOptions={that.props.payloadOptions} externalUpdate={externalUpdate} /></div>);
         } else {        
-          contents.push(<RenderObjectArray keyName={key} rowData={rowData} editableObjects={that.props.editableObjects} />);
+          contents.push(<RenderObjectArray keyName={key} rowData={rowData} editableObjects={that.props.editableObjects} externalUpdate={externalUpdate}/>);
         }
       } else {
-        contents.push(<StandardField keyName={key} rowData={rowData} />);
+        contents.push(<StandardField keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
       }
     }
     return (

@@ -145,6 +145,19 @@ const initialize = (router) => {
         });
     });
 
+    router.post('/components', (req,res,next) => { 
+        console.log('Calling update component with component:' + req.params.component)
+         componentLogic.createComponent(req.body, function(error, results) 
+        {
+            if (error) 
+            {
+                res.status(400).send(error);
+                return;
+            }
+            res.json(results);
+        });
+    });
+
     router.put('/components/:component', (req,res,next) => { 
         console.log('Calling update component with component:' + req.params.component)
          componentLogic.updateComponent(req.params.component, req.body, function(error, results) 

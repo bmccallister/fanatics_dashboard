@@ -7,6 +7,21 @@ var checkTrailingSlash = function(str) {
   return  char == '/';
 }
 
+export const cleanPayload = (availableFields, associatedFields) => {
+  var cleanedObject = {};
+   for (var key in associatedFields) {
+    var bFound = false;
+    _.each(availableFields, function(avRow) {
+      if (key == avRow.key) {
+        bFound = true;
+      }
+    });
+    if (bFound) {
+      cleanedObject[key] = associatedFields[key];
+    }
+  }
+  return cleanedObject;
+}
 
 export const isRemoved = (obj, field) => {
   var ret = false;
@@ -225,10 +240,6 @@ export class DataFetchInterface {
       return new Promise(function( resolve, reject) {
         if (!that.templateList) {
           that.templateList = [];
-        }
-        if (that.templateList.length>0 && !override) {
-          resolve(that.getTemplateList());
-          return;
         }
         const url = '/api/templates';
         getApi(url, name).then(function(data) {

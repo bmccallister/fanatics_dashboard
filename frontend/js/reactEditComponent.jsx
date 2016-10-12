@@ -1,6 +1,6 @@
 const _ = require('lodash');
 import { NavMenu } from './navMenu.jsx';
-import { DataFetchInterface, isSelectable } from './dataService';
+import { DataFetchInterface, isSelectable, cleanPayload } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
 import { BoundValueObject, ThresholdObject, GenericObject, RemoveArrayItem, AddArrayItem, RenderArray, StandardField, EditRows} from './reactFormWidgets.jsx';
@@ -55,14 +55,23 @@ export default class EditTemplate extends React.Component {
         })
         dataObject.fetchComponentList(componentId).then(function(data) {
           console.log('Got back data and setting componentData:', data);
+          console.log('Checking empty payload');
+          if (!data[0].components.payload) {
+            data[0].components.payload = {};
+          }
           that.setState ({componentData:data[0].components});
           var templateName = that.state.componentData.template;
           window.masterData = that.state.componentData;
           console.log('Getting template data');
-          dataObject.fetchTemplateList(templateName).then(function(data) {
+          dataObject.fetchTemplateList().then(function(data) {
             console.log('Got back data and setting templateData:', data);
-            that.setState ({templateData:data[0].templates});
-            window.templateData = that.state.templateData;
+            var templates = [];
+            _.each(data, function(row) {
+              templates.push(row.templates);
+            })
+            window.templateOptions = templates;
+            window.templateData = _.find(window.templateOptions, {name:templateName});
+            that.setState({templateOptions:templates });
           });
         }).catch(function(err) {
           console.log('Error:', err);
@@ -86,6 +95,9 @@ export default class EditTemplate extends React.Component {
   externalUpdate() {
     console.log('External force render called');
     var that = this;
+
+    window.templateData = _.find(window.templateOptions, {name:window.masterData.template});
+    window.masterData.payload = cleanPayload(window.templateData.dataDefinition, window.masterData.payload);
     this.setState({componentData:window.masterData});
   }
   render () {
@@ -98,10 +110,11 @@ export default class EditTemplate extends React.Component {
   var payloadOptions = [];
   var componentData = '?';
   if (this.state) {
-    if (this.state.templateData) {
+    if (this.state.templateOptions) {
       componentId = this.state.componentId;
       componentData = this.state.componentData;
-      payloadOptions = this.state.templateData.dataDefinition;
+      //payloadOptions = this.state.templateData.dataDefinition;
+      payloadOptions = _.find(window.templateOptions, {name:componentData.template}).dataDefinition;
     }
   }
     var that = this;
