@@ -165,7 +165,7 @@ select option
   margin: 5px;
   cursor: pointer;
   text-align: center;
-  width: 20px;
+  min-width: 20px;
   border-radius: 5px;
   height: 20px;
   border: 1px solid #FFF;

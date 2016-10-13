@@ -95,7 +95,7 @@ export default class EditTemplate extends React.Component {
       </div>
       <div className="row">
         <h2> Editing Component: {templateName} </h2>
-        <EditRows rowData={templateData} editableObjects="false" />
+        <EditRows rowData={templateData} editableObjects="false" externalUpdate={that.externalUpdate}/>
       </div>
       <div className="contentRow">
         <button className="saveButton" onClick={function() { that.submitForm(); } }>Save Changes</button>
@@ -110,53 +110,14 @@ export default class EditTemplate extends React.Component {
 
 var sampleTemplate = {
   "name": "sample_template",
-  "title":"Sample sampleTemplate",
+  "title":"Sample Template",
   "description": "Your Sample Template",
-  "acceptPush": false,
   "newTemplate": true,
   "dataDefinition": [
     {
-      "name": "Some Field",
-      "threshold": [],
-      "key": "someField"
-    },
-    {
-      "name": "Another Field",
-      "threshold": [
-        "0",
-        "3",
-        "5"
-      ],
-      "key": "anotherField"
-    },
-    {
-      "name": "Third Field",
-      "threshold": [],
-      "key": "thirdField"
-    },
-    {
-      "name": "Fourth Field",
-      "threshold": [
-        "0%",
-        "5%",
-        "100%"
-      ],
-      "key": "fourthField"
-    },
-    {
-      "name": "Fifth Field",
-      "threshold": [
-        "10%",
-        "7%",
-        "3%",
-        "0%"
-      ],
-      "key": "fifthField"
+      "name": "Sample Field",
+      "key": "sampleField"
     }
-  ],
-  "thresholdFields": [
-    "fourthField",
-    "fifthField"
   ],
   "module": "sample_template"
 };
