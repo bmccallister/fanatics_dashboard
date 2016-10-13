@@ -5,6 +5,7 @@ import GaugeComponent from './gaugeComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { DataFetchInterface, getApi } from './dataService';
+var ReactGridLayout = require('react-grid-layout');
 
 var socket = io.connect('http://localhost:8888');
 let dataObject = new DataFetchInterface();
@@ -98,6 +99,11 @@ class ComponentContainer extends React.Component {
   }
   
   render () {
+  var layout = [
+      {i: 'a', x: 0, y: 0, w: 1, h: 2, static: true},
+      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'c', x: 4, y: 0, w: 1, h: 2}
+    ];
     console.log('From the component container, component list is:', this.state.componentList);
     return (
     <div className="container-fluid">
@@ -114,6 +120,11 @@ class ComponentContainer extends React.Component {
       <div className="row">
         <Repeater templateList={this.state.templateList} componentList={this.state.componentList} />
       </div>
+      <div><ReactGridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+        <div key={'a'}>a</div>
+        <div key={'b'}>b</div>
+        <div key={'c'}>c</div>
+      </ReactGridLayout></div>
     </div>
     )
   }

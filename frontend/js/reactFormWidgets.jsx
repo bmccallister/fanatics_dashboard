@@ -10,6 +10,26 @@ export const isSelectable = (key) => {
   return undefined;
 }
 
+const renameKey = (keyName, value, finalCb) => {
+  try {
+    var fk = 'window.' + keyName;
+    var keyArr = fk.split('.');
+
+    var oldRef = keyArr.splice(keyArr.length-1, 1).join('.');
+    var newStr = keyArr.join('.');
+    var oldVal = eval(fk);
+    var fullStr = newStr + ' = { key: \"' + value + '\", name:\"' + oldVal + '\"}';
+
+    console.log('newobj: ', fullStr);
+     eval(fullStr);
+     if (finalCb) {
+      finalCb();
+     }
+    } catch (exc) {
+    console.log('Couldnt run eval');
+   }
+}
+
 const masterHandler = (keyName, value, finalCb) => {
   try {
     var fullStr = 'window.';
@@ -45,10 +65,16 @@ export class BoundValueObject extends React.Component {
     }
     handleChange (event) {
       var newVal = event.target.value;
-      console.log('Got an on change event against my full key of:', this.props.fullKey)
-      console.log('New value:' + newVal)
-      masterHandler(this.props.fullKey, this.props.externalUpdate);
-      this.setState({value: newVal});
+      /*if (this.props.type=='key') {
+        console.log('Renaming key');
+        renameKey(this.props.fullKey, event.target.value, this.props.externalUpdate);
+      } else {*/
+        console.log('Got an on change event against my full key of:', this.props.fullKey)
+        console.log('New value:' + newVal)
+        masterHandler(this.props.fullKey, event.target.value, this.props.externalUpdate);
+        this.setState({value: newVal});
+      //}
+      
     }
     render () {
     if (!this.state) {
@@ -95,7 +121,9 @@ export class ThresholdObject extends React.Component {
     var nameVal = usableData['name'];
     var fkKey = fullKey + '.key';
     var fkName = fullKey + '.name';
+    console.log('Doing threshold object')
     contents.push(<div export className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} externalUpdate={this.props.externalUpdate}/></div>);
+
     contents.push(<div export className="col-md-3">Name:<BoundValueObject keyName={name} fullKey={fkName} value={nameVal}  externalUpdate={this.props.externalUpdate}/></div>);
 
     console.log('checking threshold against:', data['threshold']);
@@ -198,15 +226,41 @@ export class RemoveArrayItem extends React.Component {
   }
 }
 
-export class AddArrayItem extends React.Component {
+export class AddThreshold extends React.Component {
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
     var keyName = this.props.keyName;
+
+    var fullStr = 'window.' + keyName + '["threshold"]=[0,1,3,5]';
+
+    console.log('Full str:', fullStr)
+    eval(fullStr);
+    window.masterUpdate();
+  }
+  render() {
+    var self = this;
+    return (
+      <div export className="roundedBox" onClick={self.handleClick}>Threshold</div>
+    );
+  }
+}
+
+export class AddArrayItem extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(e) {
+    var keyName = this.props.keyName.split('[')[0];
     var i = this.props.iterator;
     var fullStr = keyName + '.splice(' + i + ',0,\'NEW\')';
+    if (!i) {
+      fullStr = 'window.' + keyName + '.push({key:"newKey", name:"newName"})';
+
+    }
     console.log('Full str:', fullStr)
     eval(fullStr);
     window.masterUpdate();
@@ -291,6 +345,116 @@ export class RenderPayload extends React.Component {
   } 
 }
 
+
+export class RenderDataDefinition extends React.Component {
+  constructor(props) {
+    super(props);    
+    this.handleClick = this.handleClick.bind(this);
+  }
+  componentDidMount() {
+  }
+  handleClick (e) {
+    console.log('handling click on object:', e);
+    var clickedValue = e.nativeEvent.target.childNodes[1].nodeValue;
+    console.log('clicked:', clickedValue);
+    var clickedDirection = e.nativeEvent.target.dataset.arrayDirection;
+    console.log('Clicked clickedDirection:', clickedDirection);
+
+    var bFound = false;;
+    for (var key in window.masterData.payload) {
+      if (key == clickedValue) {
+        bFound = true;
+        console.log('Value already added')
+        break;
+      }
+    }
+
+    if (!bFound && clickedDirection == 'add') {
+      console.log('Adding')      
+      window.masterData.payload[clickedValue] = '?';
+      this.props.externalUpdate();
+    } else if (bFound && clickedDirection == 'remove') {
+      delete window.masterData.payload[clickedValue];
+      this.props.externalUpdate();
+    } else {
+      console.log('No combination of functions match')
+    }
+  }
+  render () {
+    var that = this;
+    var key = this.props.keyName;
+    var data = this.props.rowData;
+    var contents = [];
+    console.log('Editable inside ROA = ', that.props.editableObjects)
+    contents.push(<div export className="contentRow"><h2>Data Definition</h2></div>)
+    if (key == 'payload') {
+      console.log('This is a payload');
+    }
+    for (var innerKey in data[key]) {
+        var usableData = data[key][innerKey];
+        var fullKey = 'masterData.' + key;
+        if (!isNaN(parseInt(innerKey))) {
+          fullKey += '[' + innerKey + ']';
+        }
+        console.log('Rendering object array')
+        if (usableData.key) {
+            var keyVal = usableData['key'];
+            var nameVal = usableData['name'];
+            var fkKey = fullKey + '.key';
+            var fkName = fullKey + '.name';
+            var arrKey = fkName;
+            var usableValue = usableData.name;
+          // We have a key val pair
+            var options = [];
+            options.push(<div><RemoveArrayItem keyName={fullKey} /></div>)
+            options.push(<div><AddArrayItem keyName={fullKey} /></div>)
+            if (!usableData.threshold) {
+              options.push(<div><AddThreshold keyName={fullKey} /></div>)
+            }
+            contents.push(
+              <div export className="row contentRow">
+                <div export className="col-md-3"><BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} externalUpdate={this.props.externalUpdate}/></div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableValue}  externalUpdate={this.props.externalUpdate}/></div>
+                <div className="col-md-2">{options}</div>
+              </div>);     
+            if (usableData.threshold) {
+              console.log('object has threshold');
+              contents.push(
+                <div className="col-md-6 contentRow">
+                  <RenderStandardArray fullKey={arrKey} keyName={'threshold'} rowData={usableData} />
+                </div>
+              )
+            }
+
+        } else {
+          fkName += '.' + innerKey;
+          if (that.props.editableObjects.toString()=='false') {
+            contents.push(
+              <div export className="row contentRow">
+                <div export className="col-md-3">{innerKey}</div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData}  externalUpdate={this.props.externalUpdate}/></div>
+              </div>);
+          } else {
+            contents.push(
+              <div export className="row contentRow">
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={innerKey}  externalUpdate={this.props.externalUpdate}/></div>
+                <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableData}  externalUpdate={this.props.externalUpdate}/></div>
+              </div>);
+            }
+        }
+      }
+      var styleObj = {
+        background: '#262626',
+        border: '1px solid #FFF'
+      }
+      return (
+        <div export className="row" style={styleObj}>
+          {contents}
+        </div>
+      )
+  } 
+}
+
 export class RenderObjectArray extends React.Component {
   constructor(props) {
     super(props);
@@ -303,25 +467,28 @@ export class RenderObjectArray extends React.Component {
     var data = this.props.rowData;
     var contents = [];
     console.log('Editable inside ROA = ', that.props.editableObjects)
-    contents.push(<div export className="contentRow">Array:{key}</div>)
+    contents.push(<div export className="contentRow">{key}</div>)
     if (key == 'payload') {
       console.log('This is a payload');
     }
     for (var innerKey in data[key]) {
         var usableData = data[key][innerKey];
-        var fkName = 'masterData.' + key;
+        var fullKey = 'masterData.' + key;
         if (!isNaN(parseInt(innerKey))) {
-          fkName += '[' + innerKey + ']';
+          fullKey += '[' + innerKey + ']';
         }
-
+        console.log('Rendering object array')
         if (usableData.key) {
-          var arrKey = fkName;
-          fkName += '.name';
-          var usableValue = usableData.name;
+            var keyVal = usableData['key'];
+            var nameVal = usableData['name'];
+            var fkKey = fullKey + '.key';
+            var fkName = fullKey + '.name';
+            var arrKey = fkName;
+            var usableValue = usableData.name;
           // We have a key val pair
             contents.push(
             <div export className="row contentRow">
-              <div export className="col-md-3">Usable key - {usableData.key}</div>
+              <div export className="col-md-3">Key:<BoundValueObject keyName={key} fullKey={fkKey} value={keyVal} externalUpdate={this.props.externalUpdate}/></div>
               <div export className="col-md-3"><BoundValueObject keyName={name} fullKey={fkName} value={usableValue}  externalUpdate={this.props.externalUpdate}/></div>
             </div>);                    
             if (usableData.threshold) {
@@ -376,7 +543,7 @@ export class RenderStandardArray extends React.Component {
     var contents = [];
     fullKey+='.' + key;
 
-    contents.push(<div export className="col-md-6 contentRow">Array:{key}</div>)
+    contents.push(<div export className="col-md-6 contentRow"><h3><b><em>{key}</em></b></h3></div>)
     for (var i = 0; i < data[key].length; i++) {
       var tmpfullKey = fullKey + '[' + i + ']';
       var value = data[key][i];
@@ -412,6 +579,10 @@ export class StandardField extends React.Component {
     var fullKey = key;
     var idKey = 'id_' + key;
     var value = '';
+    if (key == 'newTemplate') {
+      console.log('Not displaying this object');
+      return(<div></div>);
+    }
     if (this.props.rowData) {
       value = this.props.rowData[key];
     }
@@ -468,11 +639,15 @@ export class EditRows extends React.Component {
       return (<div>Please wait</div>);
     }
     for (var key in rowData) {
-      if (_.isArray(rowData[key])) {  
-        if (_.isObject(rowData[key][0])) {
-          contents.push(<RenderObjectArray keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
+      if (_.isArray(rowData[key])) { 
+        if (key == 'dataDefinition') {
+          contents.push(<div className="payloadRow"><RenderDataDefinition keyName={key} rowData={rowData} editableObjects={that.props.editableObjects} payloadOptions={that.props.payloadOptions} externalUpdate={externalUpdate} /></div>);
         } else {
-          contents.push(<RenderStandardArray fullKey={''} keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
+          if (_.isObject(rowData[key][0])) {
+            contents.push(<RenderObjectArray keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
+          } else {
+            contents.push(<RenderStandardArray fullKey={''} keyName={key} rowData={rowData} externalUpdate={externalUpdate}/>);
+          }
         }
       }
       else if (_.isObject(rowData[key])) {
