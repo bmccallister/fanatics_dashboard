@@ -37,6 +37,7 @@ const masterHandler = (keyName, value, finalCb) => {
       fullStr+='masterData.';
     } 
     fullStr += keyName + "='"+ value + "'";
+    fullStr = fullStr.replace(/\.\./g, '.');
     console.log('building eval');
    
      eval(fullStr);
@@ -210,9 +211,9 @@ export class RemoveArrayItem extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
-    var keyName = this.props.keyName;
-    var i = this.props.iterator-1;
-    var fullStr = keyName + '.splice(' + i + ',1)';
+    var keyName = this.props.keyName.replace('.','');
+    var i = this.props.iterator;
+    var fullStr = 'window.masterData.' + keyName + '.splice(' + i + ',1)';
     console.log('Full str:', fullStr)
     eval(fullStr);
     window.masterUpdate();
@@ -254,12 +255,16 @@ export class AddArrayItem extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
-    var keyName = this.props.keyName.split('[')[0];
-    var i = this.props.iterator;
+    var keyName = this.props.keyName.replace('.','');
+    if (this.props.keyName.indexOf('[')>=0) {
+      this.props.keyName.split('[')[0];
+    }
+    var i = this.props.iterator+1;
     var fullStr = keyName + '.splice(' + i + ',0,\'NEW\')';
     if (!i) {
       fullStr = 'window.' + keyName + '.push({key:"newKey", name:"newName"})';
-
+    } else {
+      fullStr = 'window.masterData.' + fullStr;
     }
     console.log('Full str:', fullStr)
     eval(fullStr);
@@ -576,6 +581,7 @@ export class StandardField extends React.Component {
   render () {
     var externalUpdate = this.props.externalUpdate; 
     var key = this.props.keyName;
+    
     var fullKey = key;
     var idKey = 'id_' + key;
     var value = '';
@@ -589,6 +595,18 @@ export class StandardField extends React.Component {
     var divStyle = {
       background: '#333'
     };
+
+    if (key == 'id') {
+      return (
+        <div export className="row" style={divStyle}>
+          <div export className="col-md-3">ID</div>
+          <div export className="col-md-3">{value}</div>
+        </div>
+      )
+    }
+
+
+
     console.log('Getting selectable keys');
     var selectableKeys = isSelectable(key);
     if (selectableKeys) {

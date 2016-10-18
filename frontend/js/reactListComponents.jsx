@@ -42,14 +42,24 @@ class ListComponentObjects extends React.Component {
     var that = this;
     const myObject = this.props.componentList;
       let rows = [];
+      rows.push(
+        <tr className="componentList">
+          <td>
+            <div className="col-md-6"><b>Name</b></div>
+            <div className="col-md-5"><b>Template</b></div>          
+            <div className="col-md-1"><b>Context</b></div>
+          </td>
+        </tr>
+        )
       for (var i = 0 ; i < myObject.length ; i++) {
+        var name = myObject[i].components.name;
         var id = myObject[i].components.id;
           rows.push(
             <tr key={i} className="componentList">
               <td>
-                <div className="col-md-4">Name: {id}</div>
-                <div className="col-md-4">Type: {myObject[i].components.template} </div>          
-                <div className="col-md-4">Context: {myObject[i].components.context}</div>
+                <div className="col-md-6">{name}</div>
+                <div className="col-md-5">{myObject[i].components.template} </div>          
+                <div className="col-md-1">{myObject[i].components.context}</div>
               </td>
               <td>
                 <div className="col-md-1 optionItem"><Link to={{ pathname: '/editComponent', query: { componentId:id } }}>Edit</Link></div>

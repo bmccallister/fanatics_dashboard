@@ -6,17 +6,23 @@ import 'amcharts3/amcharts/themes/dark';
 
 class GaugeComponent extends React.Component {
   render()  {
-
     var myProps = this.props.data;
     console.log(myProps);
     //console.log(myProps.payload[0]);
+    console.log('Rendering gauge component')
+    var firstKey = Object.keys(myProps.payload)[0];
+    var currentValue = parseInt(myProps.payload[firstKey]);
+    var endValue = parseInt(myProps.endValue);
+    if (currentValue > endValue) {
+      endValue = currentValue + (currentValue/5);
+    }
 
     var data = {
-      endValue: myProps.endValue,
+      endValue: endValue,
       startValue: myProps.startValue,
       unit: myProps.unit,
       valueInterval: myProps.valueInterval,
-      value: 130//myProps.payload[0]
+      value: currentValue
     };
     
     var chartConfig = AmCharts.makeChart('chartdiv', {
@@ -32,7 +38,7 @@ class GaugeComponent extends React.Component {
         "gridInside": true,
         "inside": true,
         "radius": 95,
-        "centerY": 0,
+        "centerY": 90,
         "valueInterval": data.valueInterval,
         "tickColor": "#67b7dc",
         "startAngle": -90,

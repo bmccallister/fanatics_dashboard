@@ -36,7 +36,10 @@ export default class EditTemplate extends React.Component {
     	const url = '/api/tableau_components/';
       console.log('Using templateName:', templateName);
       this.setState({templateName:templateName});
-    
+      
+    window.selectableKeys = {};
+    window.selectableKeys['type'] = ['bargraph', 'pie', 'gauge', 'tree', 'heatmap'];
+
     dataObject.fetchTemplateList(templateName).then(function(data) {
         console.log('Got back data and setting templateData:', data);
         that.setState ({templateData:data[0].templates});

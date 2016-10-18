@@ -44,7 +44,7 @@ export default class EditTemplate extends React.Component {
       console.log('Using componentId:', componentId);
       this.setState({componentId:componentId});
       window.selectableKeys = {};
-      window.selectableKeys['type'] = ['bargraph', 'pie', 'gauge', 'normal'];
+      //window.selectableKeys['type'] = ['bargraph', 'pie', 'gauge', 'tree', 'heatmap'];
       console.log('Preloading selectable keys');
       dataObject.fetchTemplateList().then(function(data) {
       console.log('Setting selectable keys')
@@ -71,6 +71,12 @@ export default class EditTemplate extends React.Component {
             })
             window.templateOptions = templates;
             window.templateData = _.find(window.templateOptions, {name:templateName});
+            console.log('Assigning name!!!!!!!!!');
+            if (!window.templateData.name) {
+              window.templateData.name = window.templateData.id;
+            }
+            console.log('Assigning charts');
+            window.selectableKeys['type'] = window.templateData.charts;
             that.setState({templateOptions:templates });
           });
         }).catch(function(err) {

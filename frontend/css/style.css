@@ -148,9 +148,11 @@ select option
   height: 250px !important;
 }
 #chartdiv {
-  width: 100%;
+  width: 300px;
   height: 200px;
+  margin: 0 auto;
 }
+
 .contentRow {
   border-top: 1px solid #FFF; 
   background: #262626;

@@ -43,10 +43,11 @@ class ListComponentTemplates extends React.Component {
       let rows = [];
       for (var i = 0 ; i < myObject.length ; i++) {
         var name = myObject[i].templates.name;
+        var desc = myObject[i].templates.description;
           rows.push(
             <tr key={i} className="componentList">
               <td>Name: {name}</td>
-              <td>Desc: {myObject[i].templates.description}</td>
+              <td>Desc: {desc}</td>
               <td>
                 <div className="col-md-1 optionItem"><Link to={{ pathname: '/editTemplate', query: { templateName:name } }}>Edit</Link></div>
                 <div className="col-md-1 optionItem"><a href="#" id={name} onClick={that.handleCopy} cb={that.props.parentCallback}>Copy</a></div>

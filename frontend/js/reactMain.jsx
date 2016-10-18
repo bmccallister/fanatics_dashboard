@@ -120,11 +120,6 @@ class ComponentContainer extends React.Component {
       <div className="row">
         <Repeater templateList={this.state.templateList} componentList={this.state.componentList} />
       </div>
-      <div><ReactGridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
-        <div key={'a'}>a</div>
-        <div key={'b'}>b</div>
-        <div key={'c'}>c</div>
-      </ReactGridLayout></div>
     </div>
     )
   }
@@ -238,6 +233,9 @@ class FieldRepeater extends React.Component {
     //console.log('Checking values data against object:', this.props);
       const myObject = this.props.valuesData;
       let rows = [];
+      if (!myObject) {
+      return (<div>No values data for {this}</div>)
+      }
       for (var i = 0 ; i < myObject.length ; i++) {
         if (!myObject[i].value) {
           myObject[i].value = myObject[i].value || '?';

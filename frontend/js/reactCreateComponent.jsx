@@ -55,7 +55,7 @@ export default class CreateComponent extends React.Component {
     console.log('I am handling the on change:', e.target.value);
     var newComponent = {
       "context": "dev",
-      "id": "new_component",
+      "id": dataObject.getId('comp'),
       "lastModified": "1470669993",
       "payload": {
       },

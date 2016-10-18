@@ -7,6 +7,11 @@ var checkTrailingSlash = function(str) {
   return  char == '/';
 }
 
+export const getId = (prefix) => {
+  var milliseconds = (new Date).getTime();
+  return prefix + '_' + milliseconds;
+}
+
 export const cleanPayload = (availableFields, associatedFields) => {
   var cleanedObject = {};
    for (var key in associatedFields) {
