@@ -1,6 +1,6 @@
 const _ = require('lodash');
 import { NavMenu } from './navMenu.jsx';
-import { DataFetchInterface, isSelectable } from './dataService';
+import { DataFetchInterface, isSelectable, getId } from './dataService';
 var ReactDOMServer = require('react-dom/server'); 
 import { Link } from 'react-router'
 import { BoundValueObject, ThresholdObject, GenericObject, RemoveArrayItem, AddArrayItem, RenderArray, StandardField, EditRows} from './reactFormWidgets.jsx';
@@ -55,12 +55,13 @@ export default class CreateComponent extends React.Component {
     console.log('I am handling the on change:', e.target.value);
     var newComponent = {
       "context": "dev",
-      "id": dataObject.getId('comp'),
+      "name":getId('comp'),
+      "id": getId('comp'),
       "lastModified": "1470669993",
       "payload": {
       },
       "template": e.target.value,
-      "type": "normal"
+      "type": "tree"
     }
     for (var i = 0 ; i < this.state.templateDataList.length ; i++) {
       if (this.state.templateDataList[i].templates.name == e.target.value) {
@@ -79,6 +80,7 @@ export default class CreateComponent extends React.Component {
 
     if (!that.state.componentData) {
       if (that.state.templateList) {
+      options.push(<option key="pleaseChoose" value="Please choose">Please choose</option>)
         _.each(that.state.templateList, function(row) {
             options.push(<option key={row} value={row}>{row}</option>);
         });

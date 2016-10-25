@@ -5,6 +5,8 @@ import { Link , Router } from 'react-router'
 export class NavMenu extends React.Component {
   constructor(props) {
     super(props);
+    // This is a work around to stop the non stop default props error messages
+    delete Link.getDefaultProps;
   }
   render () {
     var emptyProps = {};

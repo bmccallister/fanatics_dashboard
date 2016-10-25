@@ -297,7 +297,6 @@ export class RenderPayload extends React.Component {
     for (var key in window.masterData.payload) {
       if (key == clickedValue) {
         bFound = true;
-        console.log('Value already added')
         break;
       }
     }

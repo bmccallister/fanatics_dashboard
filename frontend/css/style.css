@@ -147,12 +147,16 @@ select option
   max-height: 250px !important;
   height: 250px !important;
 }
-#chartdiv {
+.pieChart {
+  width: 500px;
+  height: 200px;
+  margin: -7px 0 0 -88px;
+}
+.fanCharts {
   width: 300px;
   height: 200px;
   margin: 0 auto;
 }
-
 .contentRow {
   border-top: 1px solid #FFF; 
   background: #262626;

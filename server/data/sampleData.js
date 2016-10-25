@@ -93,6 +93,11 @@ module.exports.templates = [
       ],
       "key": "systemHealth"
     }
+  ],  
+  "charts": [
+    "tree",
+    "bargraph",
+    "pie"
   ],
   "thresholdFields": [
     "averageResponse"
@@ -147,6 +152,11 @@ module.exports.templates = [
     "abandonedOrders",
     "conversionRate"
   ],
+  "charts": [
+    "tree",
+    "bargraph",
+    "pie"
+  ],
   "module": "tcs_orders"
 },
 {
@@ -199,24 +209,36 @@ module.exports.templates = [
 	"product_damaged",
 	"incorrect_customization"
   ],
+  "charts": [
+    "tree",
+    "gauge"
+  ],
   "module": "return_dispositions"
 }
 
 ];
 
 module.exports.components = [
-{  
+{
+  "context": "dev",
   "id": "tcs_load1",
-  "template": "tcs_load",
-  "context":"development",
+  "name": "TCS Load Monitoring",
+  "lastModified": "1470669993",
   "payload": {
-    "averageResponse": "1",
-    "lastHour": "5000",
-    "load": "999",
-    "peakConcurrent": "50000",
-    "systemHealth": "99%"
+    "abandonedOrders": "15",
+    "conversionRate": "6",
+    "fulfilledOrders": "400",
+    "orders": "545",
+    "stuckOrders": "30"
   },
-  "lastModified": "1470661893"
+  "template": "tcs_load",
+  "type": "pie",
+  "charts": [
+    "pie",
+    "bargraph",
+    "tree",
+    "heatmap"
+  ]
 },
 {
   "id": "tcs_orders_1",

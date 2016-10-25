@@ -3,8 +3,10 @@ import Pie from './pieComponent.jsx';
 import BarGraph from './bargraphComponent.jsx';
 import GaugeComponent from './gaugeComponent.jsx';
 import ChartistComponent from './chartistComponent.jsx';
+
+import LineGraphComponent from './linegraphComponent.jsx';
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
-import { DataFetchInterface, getApi } from './dataService';
+import { DataFetchInterface, getApi, removeAmChartsTag } from './dataService';
 var ReactGridLayout = require('react-grid-layout');
 
 var socket = io.connect('http://localhost:8888');
@@ -13,9 +15,10 @@ let dataObject = new DataFetchInterface();
 const _ = require('lodash');
 const cleanNum = (numStr) => {
   const num = (numStr).replace('%', '');
-  //console.log('Parsed Number: ' + num);
+  ////console.log('Parsed Number: ' + num);
   return parseInt(num);
 }
+
 
 // Set up component list and initialize (Really unnecessary with constructor, remove)
 dataObject.initializeLists([]);
@@ -27,11 +30,24 @@ class ComponentContainer extends React.Component {
     this.updateComponents = this.updateComponents.bind(this);
     this.updateComponentData = this.updateComponentData.bind(this);
   }
+  cleanATags() {
+    var that = this;
+    window.requestAnimationFrame(function() {
+      var node = ReactDOM.findDOMNode(that);
+      if (node !== undefined && node !== null) {
+        removeAmChartsTag();
+      }
+    });
+  }
+  componentDidUpdate() {
+    this.cleanATags();
+  }
   componentDidMount() 
   {
     this.contextChangeHandler = this.contextChangeHandler.bind(this);
     this._isMounted = false;
     this.updateComponents('all');
+    this.cleanATags();
   }
   componentWillUnmount() {
     this._isMounted = false;
@@ -48,7 +64,7 @@ class ComponentContainer extends React.Component {
   updateComponents(context)
   {
     var self = this;
-    console.log(context);
+    //console.log(context);
 
     self.setState({ selectedContextValue : context });
     
@@ -66,7 +82,7 @@ class ComponentContainer extends React.Component {
 
         if (!self.state.componentList) 
         {
-            console.log('No component list defined');
+            //console.log('No component list defined');
         }
         else
         {
@@ -104,7 +120,7 @@ class ComponentContainer extends React.Component {
       {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
       {i: 'c', x: 4, y: 0, w: 1, h: 2}
     ];
-    console.log('From the component container, component list is:', this.state.componentList);
+    //console.log('From the component container, component list is:', this.state.componentList);
     return (
     <div className="container-fluid">
     <NavMenu />
@@ -133,7 +149,7 @@ class ComponentContainer extends React.Component {
 
 class ComponentCount extends React.Component {
   render () {
-  //console.log('Rendering template count')
+  ////console.log('Rendering template count')
     const templateList = this.props.templateList || []
     return (
       <div>
@@ -208,20 +224,20 @@ const establishIndicator = (val, arrayArg) => {
     
     return indicator;
   }
-  //console.log('Checking thresholdarray');
+  ////console.log('Checking thresholdarray');
 
   if (thresholdArray.length < 1) {
     indicator+=' green';
   } else {
-    //console.log(thresholdArray[0] + " : " + thresholdArray[1]);
+    ////console.log(thresholdArray[0] + " : " + thresholdArray[1]);
     const TopVal = cleanNum(thresholdArray[0]);
     const SecondVal = cleanNum(thresholdArray[1]);
     
     if (TopVal > SecondVal) {
-      //console.log('true');
+      ////console.log('true');
       indicator = determineDesc(val, thresholdArray);
     } else {
-      //console.log('false');
+      ////console.log('false');
       indicator = determineAsc(val, thresholdArray);
     }
   }
@@ -230,7 +246,6 @@ const establishIndicator = (val, arrayArg) => {
 
 class FieldRepeater extends React.Component {
     render() {
-    //console.log('Checking values data against object:', this.props);
       const myObject = this.props.valuesData;
       let rows = [];
       if (!myObject) {
@@ -241,7 +256,7 @@ class FieldRepeater extends React.Component {
           myObject[i].value = myObject[i].value || '?';
         }
         let indicator = 'indicator';
-        //console.log(myObject[i]);
+        ////console.log(myObject[i]);
         indicator += establishIndicator(cleanNum(myObject[i].value),myObject[i].threshold)
         rows.push(
           <tr key={i}>
@@ -289,7 +304,7 @@ class RepeaterRow extends React.Component {
     var templates = this.props.templateList;
     var component = this.props.componentList[this.props.index].components;
     mergeComponentData(templates, component);
-    console.log(component);
+    //console.log(component);
     if (component.type=='pie') 
     {
       return (
@@ -306,6 +321,12 @@ class RepeaterRow extends React.Component {
     {
       return (
         <GaugeComponent data={component}/>
+      )
+    }
+    else if (component.type=='linegraph') 
+    {
+      return (
+        <LineGraphComponent data={component}/>
       )
     }
     else
@@ -349,7 +370,7 @@ class Repeater extends React.Component {
     }
     componentDidMount () {
 
-      console.log('Repeater select mounted');
+      //console.log('Repeater select mounted');
       this.enabledTimer = false;
     }
     componentWillUnmount () {
@@ -361,7 +382,7 @@ class Repeater extends React.Component {
       
       var templateListTemp = self.props.templateList;
       var componentListTemp = self.props.componentList;
-      //console.log('upstream from render repeaterrow, the componentListTemp is ', componentListTemp)
+      ////console.log('upstream from render repeaterrow, the componentListTemp is ', componentListTemp)
       for (var i = 0 ; i < componentListTemp.length ; i++) {
         //var componentListTemp = createFragment(componentListTemp);
         rows.push(<RepeaterRow key={i} index={i} templateList={templateListTemp} componentList={componentListTemp} />);
@@ -399,14 +420,14 @@ class ContextSelect extends React.Component{
       this.state = { options: [] };
     }
     componentDidMount() {
-      console.log('Context select mounted');
+      //console.log('Context select mounted');
         var self = this;
         // get your data
-        console.log(self.props.url);
+        //console.log(self.props.url);
         var optionList = [];
         getApi(self.props.url, '').then(function(data) {
             // assuming data is an array of {name: "foo", value: "bar"}
-            console.log(data);
+            //console.log(data);
             for (var i = 0; i < data.length; i++) {
 
                 var option = data[i];
@@ -415,7 +436,7 @@ class ContextSelect extends React.Component{
                     <option key={i} value={option.context}>{option.context} ({option.count})</option>
                 );
             }
-            console.log(optionList);
+            //console.log(optionList);
 
             self.setState({ options: optionList });
 

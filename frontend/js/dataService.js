@@ -12,6 +12,19 @@ export const getId = (prefix) => {
   return prefix + '_' + milliseconds;
 }
 
+export const removeAmChartsTag = function () {
+  var aList = document.getElementsByTagName('A');
+  _.each(aList, function(row) {
+    if (row) {
+      if (row.attributes) {
+        if (row.attributes['href'].value.indexOf('amcharts')>=0) {
+          row.parentNode.removeChild(row);
+        }
+      }
+    }
+  })
+}
+
 export const cleanPayload = (availableFields, associatedFields) => {
   var cleanedObject = {};
    for (var key in associatedFields) {

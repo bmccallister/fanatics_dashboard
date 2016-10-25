@@ -7,9 +7,6 @@ import 'amcharts3/amcharts/themes/dark';
 class GaugeComponent extends React.Component {
   render()  {
     var myProps = this.props.data;
-    console.log(myProps);
-    //console.log(myProps.payload[0]);
-    console.log('Rendering gauge component')
     var firstKey = Object.keys(myProps.payload)[0];
     var currentValue = parseInt(myProps.payload[firstKey]);
     var endValue = parseInt(myProps.endValue);
@@ -24,8 +21,10 @@ class GaugeComponent extends React.Component {
       valueInterval: myProps.valueInterval,
       value: currentValue
     };
+
     
-    var chartConfig = AmCharts.makeChart('chartdiv', {
+    var divName = 'gauge_' + myProps.id;
+    var chartConfig = AmCharts.makeChart(divName, {
       "theme": "dark",
       "type": "gauge",
       "axes": [{
@@ -69,9 +68,7 @@ class GaugeComponent extends React.Component {
         "value": data.value        
       }]
     });
-    
-    console.log(chartConfig);
-    
+        
     var type = 'Gauge'
 
     if (!myProps.size)
@@ -87,7 +84,7 @@ class GaugeComponent extends React.Component {
           <div className="panel panel-default">
             <div className="panel-heading"><h4>{myProps.title}</h4> Gauge: {myProps.description}</div>
             <div className="panel-body component-min-height">
-              <div id="chartdiv"></div>
+              <div id={divName} className="fanCharts"></div>
             </div>
             <div className="panel-footer">{myProps.context}</div>
           </div>
