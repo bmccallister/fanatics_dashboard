@@ -6,6 +6,7 @@ import 'amcharts3/amcharts/themes/dark';
 
 class GaugeComponent extends React.Component {
   render()  {
+    console.log('Rendering gauge component');
     var myProps = this.props.data;
     var firstKey = Object.keys(myProps.payload)[0];
     var currentValue = parseInt(myProps.payload[firstKey]);
@@ -22,7 +23,6 @@ class GaugeComponent extends React.Component {
       value: currentValue
     };
 
-    
     var divName = 'gauge_' + myProps.id;
     var chartConfig = AmCharts.makeChart(divName, {
       "theme": "dark",

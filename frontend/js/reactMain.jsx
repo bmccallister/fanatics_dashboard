@@ -44,13 +44,20 @@ class ComponentContainer extends React.Component {
   }
   componentDidMount() 
   {
+    if (!window.cachedTemplateData) {
+      window.cachedTemplateData = {};
+    }
+
+    console.log('Reactmain mounted');
     this.contextChangeHandler = this.contextChangeHandler.bind(this);
-    this._isMounted = false;
+    this._isMounted = true;
+    this._calledComponentWillUnmount = false;
     this.updateComponents('all');
     this.cleanATags();
   }
-  componentWillUnmount() {
+  componentDidUnmount() {
     this._isMounted = false;
+    this.componentMounted = false;
   }
   contextChangeHandler(e) {
     this.updateComponentData(e.target.value);
@@ -64,6 +71,9 @@ class ComponentContainer extends React.Component {
   updateComponents(context)
   {
     var self = this;
+    if (!this._isMounted) {
+      return;
+    }
     //console.log(context);
 
     self.setState({ selectedContextValue : context });
@@ -75,9 +85,17 @@ class ComponentContainer extends React.Component {
     socket.emit("templates", '');
     socket.on("templates", function(templateData)
     {
+
+      if (!self._isMounted) {
+        return;
+      }
       socket.emit("componentsByContext", '');
       socket.on("componentsByContext", function(componentData)
       {
+
+        if (!self._isMounted) {
+          return;
+        }
         self.setState({templateList:templateData, componentList:componentData});
 
         if (!self.state.componentList) 
@@ -93,6 +111,10 @@ class ComponentContainer extends React.Component {
                 socket.emit("componentByID", componentData.id);
                 socket.on("componentByID", function(data)
                 {
+                    if (!self._isMounted) {
+                      console.log('Skipping update components as I am not mounted');
+                      return;
+                    }
                     for (var j = 0; j < componentData.values.length; j++)
                     {
                       var componentDataRow = componentData.values[j];
@@ -101,12 +123,27 @@ class ComponentContainer extends React.Component {
                         componentDataRow.value = data.payload[componentDataRow.key];
                       }
                     }
+                    if (!window.cachedTemplateData['componentData']) {
+                      window.cachedTemplateData['componentData'] = {};
+                      window.cachedTemplateData['componentData'][data['id']] = {};
+                    } 
 
-                    self.setState ({componentData:data});
+                    if (!window.cachedTemplateData['componentData'][data['id']]) {                      
+                      window.cachedTemplateData['componentData'][data['id']] = {};
+                    }
+
 
                     var currentTime = new Date();
                     var options = { hour12: true };
-                    self.setState({currentTime: currentTime.toLocaleString('en-US', options)});
+
+                    if (!_.isEqual(data, window.cachedTemplateData['componentData'][data['id']])) {
+                      self.setState ({componentData:data});
+                      self.setState({currentTime: currentTime.toLocaleString('en-US', options)});
+                    }
+                    window.cachedTemplateData['componentData'][data['id']] = data;    
+                  
+
+                    
                 });  
             }
         }
@@ -115,11 +152,24 @@ class ComponentContainer extends React.Component {
   }
   
   render () {
-  var layout = [
+    var layout = [
       {i: 'a', x: 0, y: 0, w: 1, h: 2, static: true},
       {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
       {i: 'c', x: 4, y: 0, w: 1, h: 2}
     ];
+    if (!this.state) {
+      console.log('No state');
+      return (<div>Please wait</div>);
+    }
+    if (!this.state.templateList) {
+      console.log('No templateList');
+      return (<div>Please wait</div>);
+    }
+    if (this.state.templateList.length < 1) {
+      console.log('No templateList length');
+      return (<div>Please wait</div>);
+    }
+    console.log('I have template list:',this.state.templateList)
     //console.log('From the component container, component list is:', this.state.componentList);
     return (
     <div className="container-fluid">
